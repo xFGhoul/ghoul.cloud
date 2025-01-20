@@ -9,4 +9,5 @@ FROM base AS development
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY . .
 
+EXPOSE 4321
 CMD ["bun", "run", "dev"]
