@@ -1,63 +1,122 @@
 ---
 const gifs = [
-    "gifs/stars.gif",
-    "gifs/ascii.gif",
-    "gifs/letters.gif",
-    "gifs/hat.gif",
-    "gifs/gojo.gif",
-    "gifs/bmw.gif",
-    "gifs/genshin.gif",
-    "gifs/ghibili.gif",
-    "gifs/kaneki.gif",
-    "gifs/slayer.gif",
-    "gifs/sword.gif",
-    "gifs/whale.gif",
-    "gifs/white.gif",
-    "gifs/zero-two.gif",
+  "gifs/stars.gif",
+  "gifs/ascii.gif",
+  "gifs/letters.gif",
+  "gifs/gojo.gif",
+  "gifs/bmw.gif",
+  "gifs/genshin.gif",
+  "gifs/kaneki.gif",
+  "gifs/white.gif",
+  "gifs/zero-two.gif",
 ];
 
 const gifUrl = gifs[Math.floor(Math.random() * gifs.length)];
 ---
 
-<div class="background">
-    <img
-        src={gifUrl}
-        alt="Background GIF"
-        decoding="async"
-        loading="lazy"
-        fetchpriority="high"
-        id="background-gif"
-    />
+<div class="loading-spinner" id="loading-spinner">
+  <div class="spinner"></div>
+</div>
+
+<div class="background" id="background" style="opacity: 0;">
+  <img
+    src={gifUrl}
+    decoding="async"
+    loading="eager"
+    fetchpriority="high"
+    id="background-gif"
+  />
 </div>
 
 <style>
-    .background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.6; /* Adjust the opacity to make it translucent */
-    }
+  .loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
 
-    .background img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #333;
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
     }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-spinner p {
+    color: #fff;
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+
+  .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.6;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 </style>
 
 <script>
-    import { showToast } from "~/components/ui/toast";
+  import { showToast } from "~/components/ui/toast";
 
-    const image = document.getElementById("background-gif");
+  const image = document.getElementById("background-gif");
+  const spinner = document.getElementById("loading-spinner");
+  const background = document.getElementById("background");
 
-    image?.addEventListener("load", () =>
-        showToast({
-            title: "🍱 Background Loaded",
-            variant: "success",
-            duration: 700,
-        }),
-    );
+  image?.addEventListener("load", () => {
+    if (spinner) {
+      spinner.style.display = "none";
+    }
+    if (background) {
+      background.style.opacity = "0.6";
+    }
+
+    window.dispatchEvent(new CustomEvent("backgroundLoaded"));
+
+    showToast({
+      title: "🍱 Background Loaded",
+      variant: "success",
+      duration: 700,
+    });
+  });
+
+  setTimeout(() => {
+    if (spinner && spinner.style.display !== "none") {
+      spinner.style.display = "none";
+      if (background) {
+        background.style.opacity = "0.6";
+      }
+      window.dispatchEvent(new CustomEvent("backgroundLoaded"));
+    }
+  }, 10000); // 10 second timeout
 </script>

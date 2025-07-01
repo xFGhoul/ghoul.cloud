@@ -1,36 +1,56 @@
 ---
 const songs = [
-    "audio/congratulations.mp3",
-    "audio/drifting.mp3",
-    "audio/oppenheimer.mp3",
-    "audio/vixen.mp3",
-    "audio/rain.mp3",
-    "audio/sweden.mp3",
+  "audio/congratulations.mp3",
+  "audio/drifting.mp3",
+  "audio/oppenheimer.mp3",
+  "audio/vixen.mp3",
+  "audio/rain.mp3",
+  "audio/sweden.mp3",
 ];
 
 const randomSong = songs[Math.floor(Math.random() * songs.length)];
 ---
 
-<audio id="background-audio" autoplay loop>
-    <source src={randomSong} type="audio/mpeg" />
+<audio id="background-audio" loop>
+  <source src={randomSong} type="audio/mpeg" />
 </audio>
 
 <script>
-    import { showToast } from "~/components/ui/toast";
+  import { showToast } from "~/components/ui/toast";
 
-    const audio = document.getElementById("background-audio");
+  const audio = document.getElementById("background-audio") as HTMLAudioElement;
 
+  // Start audio when background is loaded
+  window.addEventListener("backgroundLoaded", () => {
     if (audio) {
-        showToast({
-            title: "🎵 Audio Loaded",
+      audio
+        .play()
+        .then(() => {
+          showToast({
+            title: "🎵 Audio Started",
             variant: "success",
             duration: 700,
-        });
-    } else {
-        showToast({
-            title: "🎵 Audio Failed",
-            variant: "error",
-            duration: 700,
+          });
+        })
+        .catch((error) => {
+          console.error("Audio playback failed:", error);
+          showToast({
+            title: "🔇 Audio requires interaction",
+            variant: "warning",
+            duration: 2000,
+          });
         });
     }
+  });
+
+  // Allow user to start audio manually if auto-play fails
+  document.addEventListener(
+    "click",
+    () => {
+      if (audio && audio.paused) {
+        audio.play().catch(console.error);
+      }
+    },
+    { once: true }
+  );
 </script>
