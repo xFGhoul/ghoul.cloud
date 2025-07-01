@@ -1,17 +1,4 @@
 ---
-const gifs = [
-  "gifs/stars.gif",
-  "gifs/ascii.gif",
-  "gifs/letters.gif",
-  "gifs/gojo.gif",
-  "gifs/bmw.gif",
-  "gifs/genshin.gif",
-  "gifs/kaneki.gif",
-  "gifs/white.gif",
-  "gifs/zero-two.gif",
-];
-
-const gifUrl = gifs[Math.floor(Math.random() * gifs.length)];
 ---
 
 <div class="loading-spinner" id="loading-spinner">
@@ -20,7 +7,7 @@ const gifUrl = gifs[Math.floor(Math.random() * gifs.length)];
 
 <div class="background" id="background" style="opacity: 0;">
   <img
-    src={gifUrl}
+    src="gifs/gojo.gif"
     decoding="async"
     loading="eager"
     fetchpriority="high"
