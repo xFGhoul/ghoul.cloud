@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  astro-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: ghoul-cloud-home
+    ports:
+      - "4321:4321"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - ASTRO_TELEMETRY_DISABLED=1
+      - NODE_ENV=development
+    networks:
+      - ghoul-network
+    restart: unless-stopped
+    
+networks:
+  ghoul-network:
+    driver: bridge
