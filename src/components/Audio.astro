@@ -20,7 +20,6 @@ const randomSong = songs[Math.floor(Math.random() * songs.length)];
 
   const audio = document.getElementById("background-audio") as HTMLAudioElement;
 
-  // Start audio when background is loaded
   window.addEventListener("backgroundLoaded", () => {
     if (audio) {
       audio
@@ -33,9 +32,9 @@ const randomSong = songs[Math.floor(Math.random() * songs.length)];
           });
         })
         .catch((error) => {
-          console.error("Audio playback failed:", error);
+          console.error("Audio Playback Failed:", error);
           showToast({
-            title: "🔇 Audio requires interaction",
+            title: "🔇 Audio Requires Interaction",
             variant: "warning",
             duration: 2000,
           });
@@ -43,12 +42,16 @@ const randomSong = songs[Math.floor(Math.random() * songs.length)];
     }
   });
 
-  // Allow user to start audio manually if auto-play fails
   document.addEventListener(
     "click",
     () => {
       if (audio && audio.paused) {
         audio.play().catch(console.error);
+        showToast({
+          title: "🎵 Audio Started",
+          variant: "success",
+          duration: 700,
+        });
       }
     },
     { once: true }

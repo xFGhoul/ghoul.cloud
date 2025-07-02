@@ -94,12 +94,13 @@
 </div>
 
 <script>
-  console.log("👨🏻‍💻 Welcome to my website! 🚀");
+  console.log("👨🏻‍💻 Welcome 🚀");
 
   window.addEventListener("backgroundLoaded", () => {
     const mainContainer = document.getElementById("main-container");
     if (mainContainer) {
       mainContainer.style.opacity = "1";
+      mainContainer.style.transform = "translateY(0)";
     }
   });
 </script>
