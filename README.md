@@ -4,7 +4,7 @@
 
 ## Information 📄
 
-This is the source code for [ghouldev.tech](https://ghouldev.tech), my personal website.
+This is the source code for [ghoul.cloud](https://ghoul.cloud), my personal website.
 
 ## Building 🏗️
 
@@ -18,8 +18,8 @@ TODO
 
 ## Roadmap 🚚
 
-- [] Improved UI
-- [] More Widgets
+- [x] Improved UI
+- [x] More Widgets
 
 ## Contributing 👥
 
