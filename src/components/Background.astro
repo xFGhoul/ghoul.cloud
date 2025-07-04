@@ -18,7 +18,7 @@
     loop
     playsinline
     preload="auto"
-    id="background-gif"></video>
+    id="background-video"></video>
 </div>
 
 <style>
@@ -101,6 +101,14 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .background video {
+      display: block;
+      margin: 0 auto;
+      object-fit: fill;
+    }
   }
 </style>
 

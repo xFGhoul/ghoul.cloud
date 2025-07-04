@@ -90,6 +90,75 @@
       width: 20px;
       height: 20px;
     }
+
+    @media (max-width: 768px) {
+      #main-container {
+        padding: 0 16px;
+      }
+
+      #content {
+        padding: 16px;
+      }
+
+      #links {
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .button {
+        padding: 10px 20px;
+        font-size: 13px;
+        min-width: 55px;
+        min-height: 44px;
+        border-radius: 6px;
+      }
+
+      .button svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #main-container {
+        padding: 0 12px;
+      }
+
+      #content {
+        padding: 12px;
+      }
+
+      #links {
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .button {
+        padding: 8px 16px;
+        font-size: 12px;
+        min-width: 50px;
+        min-height: 40px;
+        border-radius: 6px;
+      }
+
+      .button svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      #links {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .button {
+        width: 100%;
+        max-width: 200px;
+        padding: 10px 20px;
+      }
+    }
   </style>
 </div>
 

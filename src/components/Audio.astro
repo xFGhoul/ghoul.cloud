@@ -112,6 +112,7 @@
     align-items: center;
     gap: 12px;
     min-width: 300px;
+    max-width: 100%;
   }
 
   .album-cover {
@@ -124,6 +125,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
 
   .album-cover img {
@@ -142,6 +144,7 @@
   .song-info {
     flex: 1;
     min-width: 0;
+    overflow: hidden;
   }
 
   .song-title {
@@ -151,7 +154,6 @@
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .song-artist {
@@ -159,13 +161,13 @@
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .player-controls {
     display: flex;
     align-items: center;
     gap: 2px;
+    flex-shrink: 0;
   }
 
   .control-btn {
@@ -205,8 +207,21 @@
   }
 
   @media (max-width: 640px) {
+    .music-player {
+      max-width: 95vw;
+    }
+
     .player-content {
       min-width: 280px;
+      max-width: 100%;
+    }
+
+    .album-cover {
+      flex-shrink: 0;
+    }
+
+    .song-info {
+      overflow: hidden;
     }
 
     .song-title {
@@ -215,6 +230,10 @@
 
     .song-artist {
       font-size: 11px;
+    }
+
+    .player-controls {
+      flex-shrink: 0; 
     }
 
     .control-btn {
@@ -226,6 +245,37 @@
     .play-pause {
       width: 36px;
       height: 36px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .music-player {
+      max-width: 98vw;
+      padding: 10px;
+    }
+
+    .player-content {
+      min-width: 250px;
+      gap: 8px;
+    }
+
+    .song-title {
+      font-size: 10px;
+    }
+
+    .song-artist {
+      font-size: 10px;
+    }
+
+    .control-btn {
+      width: 28px;
+      height: 28px;
+      padding: 4px;
+    }
+
+    .play-pause {
+      width: 32px;
+      height: 32px;
     }
   }
 </style>
@@ -469,7 +519,6 @@
   });
 
   audio?.addEventListener("ended", () => {
-    console.log("song ended = auto playing");
     nextSong();
   });
 
@@ -489,16 +538,19 @@
     "click",
     (e) => {
       if (audio && audio.paused && e.target !== playPauseBtn) {
-        audio.play().then(() => {
-          isPlaying = true;
-          playIcon?.classList.add("hidden");
-          pauseIcon?.classList.remove("hidden");
-          showToast({
-            title: "🎵 Audio Started",
-            variant: "success",
-            duration: 700,
-          });
-        }).catch(console.error);
+        audio
+          .play()
+          .then(() => {
+            isPlaying = true;
+            playIcon?.classList.add("hidden");
+            pauseIcon?.classList.remove("hidden");
+            showToast({
+              title: "🎵 Audio Started",
+              variant: "success",
+              duration: 700,
+            });
+          })
+          .catch(console.error);
       }
     },
     { once: true }
