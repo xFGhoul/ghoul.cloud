@@ -22,10 +22,3 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-
-# Local Files
-*.mp3
-*.gif
-
-# nohup
-nohup.out

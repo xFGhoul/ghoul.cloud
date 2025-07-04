@@ -10,16 +10,16 @@ import { cva } from "class-variance-authority"
 import { cn } from "~/lib/utils"
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--kb-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--kb-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[opened]:animate-in data-[closed]:animate-out data-[swipe=end]:animate-out data-[closed]:fade-out-80 data-[closed]:slide-out-to-right-full data-[opened]:slide-in-from-top-full data-[opened]:sm:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border p-4 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--kb-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--kb-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[opened]:animate-in data-[closed]:animate-out data-[swipe=end]:animate-out data-[closed]:fade-out-80 data-[closed]:slide-out-to-right-full data-[opened]:slide-in-from-top-full data-[opened]:sm:slide-in-from-bottom-full",
   {
     variants: {
       variant: {
-        default: "border bg-background text-foreground",
-        destructive:
-          "destructive group border-destructive bg-destructive text-destructive-foreground",
-        success: "success border-success-foreground bg-success text-success-foreground",
-        warning: "warning border-warning-foreground bg-warning text-warning-foreground",
-        error: "error border-error-foreground bg-error text-error-foreground"
+        default: "bg-black/40 backdrop-blur-[10px] border-white/20 text-white",
+        destructive: "destructive group bg-red-500/40 backdrop-blur-[10px] border-red-400/30 text-white",
+        success: "success bg-green-500/40 backdrop-blur-[10px] border-green-400/30 text-white",
+        warning: "warning bg-yellow-500/40 backdrop-blur-[10px] border-yellow-400/30 text-white",
+        error: "error bg-red-500/40 backdrop-blur-[10px] border-red-400/30 text-white",
+        info: "info bg-blue-500/40 backdrop-blur-[10px] border-blue-400/30 text-white"
       }
     },
     defaultVariants: {
@@ -42,7 +42,7 @@ const Toaster = <T extends ValidComponent = "ol">(
       <ToastPrimitive.Region>
         <ToastPrimitive.List
           class={cn(
-            "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-2 p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
+            "fixed top-4 right-4 z-[100] flex max-h-screen w-full flex-col gap-2 p-4 sm:max-w-[420px]",
             local.class
           )}
           {...others}
@@ -75,7 +75,7 @@ const ToastClose = <T extends ValidComponent = "button">(
   return (
     <ToastPrimitive.CloseButton
       class={cn(
-        "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-destructive-foreground group-[.error]:text-error-foreground group-[.success]:text-success-foreground group-[.warning]:text-warning-foreground",
+        "absolute right-2 top-2 rounded-md p-1 text-white/70 opacity-0 transition-all hover:opacity-100 hover:bg-white/10 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/20 group-hover:opacity-100",
         local.class
       )}
       {...others}
@@ -105,7 +105,7 @@ const ToastTitle = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, ToastTitleProps<T>>
 ) => {
   const [local, others] = splitProps(props as ToastTitleProps, ["class"])
-  return <ToastPrimitive.Title class={cn("text-sm font-semibold", local.class)} {...others} />
+  return <ToastPrimitive.Title class={cn("text-sm font-semibold text-white", local.class)} {...others} />
 }
 
 type ToastDescriptionProps<T extends ValidComponent = "div"> =
@@ -115,7 +115,7 @@ const ToastDescription = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, ToastDescriptionProps<T>>
 ) => {
   const [local, others] = splitProps(props as ToastDescriptionProps, ["class"])
-  return <ToastPrimitive.Description class={cn("text-sm opacity-90", local.class)} {...others} />
+  return <ToastPrimitive.Description class={cn("text-sm text-white/80", local.class)} {...others} />
 }
 
 function showToast(props: {

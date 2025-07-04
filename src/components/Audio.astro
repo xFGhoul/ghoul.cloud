@@ -1,30 +1,456 @@
 ---
-const songs = [
-  "audio/congratulations.mp3",
-  "audio/drifting.mp3",
-  "audio/oppenheimer.mp3",
-  "audio/vixen.mp3",
-  "audio/rain.mp3",
-  "audio/sweden.mp3",
-];
 
-const randomSong = songs[Math.floor(Math.random() * songs.length)];
 ---
 
-<audio id="background-audio" loop>
-  <source src={randomSong} type="audio/mpeg" />
-</audio>
+<audio id="background-audio"> </audio>
+
+<div class="music-player" id="music-player">
+  <div class="player-content">
+    <div class="album-cover">
+      <img src="" alt="" id="album-image" />
+    </div>
+
+    <div class="song-info">
+      <div class="song-title" id="song-title">Loading...</div>
+      <div class="song-artist" id="song-artist">Please wait...</div>
+    </div>
+
+    <div class="player-controls">
+      <button class="control-btn" id="prev-btn">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon points="19,20 9,12 19,4"></polygon>
+          <line x1="5" y1="19" x2="5" y2="5"></line>
+        </svg>
+      </button>
+
+      <button class="control-btn play-pause" id="play-pause-btn">
+        <svg
+          class="play-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon points="5,3 19,12 5,21"></polygon>
+        </svg>
+        <svg
+          class="pause-icon hidden"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="6" y="4" width="4" height="16"></rect>
+          <rect x="14" y="4" width="4" height="16"></rect>
+        </svg>
+      </button>
+
+      <button class="control-btn" id="next-btn">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon points="5,4 15,12 5,20"></polygon>
+          <line x1="19" y1="5" x2="19" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .music-player {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 12px;
+
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .music-player.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .music-player:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .player-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+  }
+
+  .album-cover {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .album-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .music-icon {
+    position: absolute;
+    font-size: 20px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .song-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .song-title {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .song-artist {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .player-controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .control-btn {
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+  }
+
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .control-btn:active {
+    transform: scale(0.95);
+  }
+
+  .play-pause:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .control-btn svg {
+    fill: white;
+    stroke: white;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .player-content {
+      min-width: 280px;
+    }
+
+    .song-title {
+      font-size: 13px;
+    }
+
+    .song-artist {
+      font-size: 11px;
+    }
+
+    .control-btn {
+      width: 32px;
+      height: 32px;
+      padding: 6px;
+    }
+
+    .play-pause {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
 
 <script>
   import { showToast } from "~/components/ui/toast";
 
   const audio = document.getElementById("background-audio") as HTMLAudioElement;
+  const musicPlayer = document.getElementById("music-player");
+  const playPauseBtn = document.getElementById("play-pause-btn");
+  const playIcon = playPauseBtn?.querySelector(".play-icon");
+  const pauseIcon = playPauseBtn?.querySelector(".pause-icon");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+
+  const songs = [
+    {
+      file: "audio/congratulations.mp3",
+      title: "Congratulations",
+      artist: "Mac Miller",
+      cover: "/covers/congratulations.jpeg",
+    },
+    {
+      file: "audio/oppenheimer.mp3",
+      title: "Can You Hear The Music",
+      artist: "Ludwig Göransson",
+      cover: "/covers/oppenheimer.jpeg",
+    },
+    {
+      file: "audio/power_trip.mp3",
+      title: "Power Trip",
+      artist: "J. Cole ft. Miguel",
+      cover: "/covers/power_trip.jpeg",
+    },
+    {
+      file: "audio/sweden.mp3",
+      title: "Sweden",
+      artist: "C418",
+      cover: "/covers/sweden.jpeg",
+    },
+    {
+      file: "audio/murder_rate.mp3",
+      title: "Murder Rate",
+      artist: "Juice Wrld",
+      cover: "/covers/murder_rate.webp",
+    },
+    {
+      file: "audio/moth_balls.mp3",
+      title: "Moth Balls",
+      artist: "Drake ft. PARTYNEXTDOOR",
+      cover: "/covers/moth_balls.jpeg",
+    },
+    {
+      file: "audio/in_your_eyes.mp3",
+      title: "In Your Eyes",
+      artist: "Kyle Richh",
+      cover: "/covers/in_your_eyes.jpg",
+    },
+    {
+      file: "audio/you_made_it.mp3",
+      title: "You Made It",
+      artist: "PARTYNEXTDOOR",
+      cover: "/covers/pnd.png",
+    },
+    {
+      file: "audio/not_for_sale_fossil.mp3",
+      title: "Not For Sale Fossil",
+      artist: "Kanon Wakeshima",
+      cover: "/covers/wakeshima.jpg",
+    },
+    {
+      file: "audio/to_higher_climbs.mp3",
+      title: "To Higher Climbs Where Few Might Stand",
+      artist: "Xanthochroid",
+      cover: "/covers/xanthochroid.jpg",
+    },
+    {
+      file: "audio/orchids.mp3",
+      title: "Orchids",
+      artist: "Glass Beach",
+      cover: "/covers/glass_beach.jpg",
+    },
+    {
+      file: "audio/demetori.mp3",
+      title: "The Madpiero Laughs",
+      artist: "Demetori",
+      cover: "/covers/demetori.jpeg",
+    },
+    {
+      file: "audio/deus_absconditus.mp3",
+      title: "Deus Absconditus ||",
+      artist: "Xanthochroid",
+      cover: "/covers/blessed_he_who_boils.jpg",
+    },
+    {
+      file: "audio/origami.mp3",
+      title: "Origami",
+      artist: "The Rare Occasions",
+      cover: "/covers/origami.jpg",
+    },
+    {
+      file: "audio/yomi_yori.mp3",
+      title: "黄泉より聴こゆ、皇国の燈と焔の少女。",
+      artist: "Imperial Circus Dead Decadence",
+      cover: "/covers/yomi_yori.jpg",
+    },
+    {
+      file: "audio/libera.mp3",
+      title: "Libera",
+      artist: "Ne Obliviscaris",
+      cover: "/covers/libera.jpg",
+    },
+    {
+      file: "audio/moon_river.mp3",
+      title: "Moon River",
+      artist: "Frank Ocean",
+      cover: "/covers/moon_river.jpg",
+    },
+    {
+      file: "audio/blessed.mp3",
+      title: "Blessed",
+      artist: "Daniel Caeser",
+      cover: "/covers/daniel_caeser.jpeg",
+    },
+  ];
+
+  let currentSongIndex = Math.floor(Math.random() * songs.length);
+  let isPlaying = false;
+
+  function updateSongInfo() {
+    const currentSong = songs[currentSongIndex];
+    const songTitle = document.getElementById("song-title");
+    const songArtist = document.getElementById("song-artist");
+    const albumImage = document.getElementById(
+      "album-image"
+    ) as HTMLImageElement;
+
+    if (songTitle) songTitle.textContent = currentSong.title;
+    if (songArtist) songArtist.textContent = currentSong.artist;
+    if (albumImage) {
+      albumImage.src = currentSong.cover;
+      albumImage.alt = currentSong.title;
+    }
+
+    if (audio) {
+      audio.src = currentSong.file;
+      if (!isPlaying) {
+        audio.load();
+      }
+    }
+  }
+
+  function togglePlayPause() {
+    if (audio) {
+      if (audio.paused) {
+        audio
+          .play()
+          .then(() => {
+            isPlaying = true;
+            playIcon?.classList.add("hidden");
+            pauseIcon?.classList.remove("hidden");
+            showToast({
+              title: "🎵 Audio Started",
+              variant: "success",
+              duration: 700,
+            });
+          })
+          .catch(console.error);
+      } else {
+        audio.pause();
+        isPlaying = false;
+        playIcon?.classList.remove("hidden");
+        pauseIcon?.classList.add("hidden");
+      }
+    }
+  }
+
+  function nextSong() {
+    const wasPlaying = !audio?.paused;
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    updateSongInfo();
+
+    if (wasPlaying && audio) {
+      audio.addEventListener(
+        "loadeddata",
+        () => {
+          audio.play().catch(console.error);
+        },
+        { once: true }
+      );
+    }
+  }
+
+  function prevSong() {
+    const wasPlaying = !audio?.paused;
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    updateSongInfo();
+
+    if (wasPlaying && audio) {
+      audio.addEventListener(
+        "loadeddata",
+        () => {
+          audio.play().catch(console.error);
+        },
+        { once: true }
+      );
+    }
+  }
+
+  updateSongInfo();
+
+  playPauseBtn?.addEventListener("click", togglePlayPause);
+  nextBtn?.addEventListener("click", nextSong);
+  prevBtn?.addEventListener("click", prevSong);
 
   window.addEventListener("backgroundLoaded", () => {
+    musicPlayer?.classList.add("visible");
+
     if (audio) {
       audio
         .play()
         .then(() => {
+          isPlaying = true;
+          playIcon?.classList.add("hidden");
+          pauseIcon?.classList.remove("hidden");
           showToast({
             title: "🎵 Audio Started",
             variant: "success",
@@ -42,16 +468,28 @@ const randomSong = songs[Math.floor(Math.random() * songs.length)];
     }
   });
 
+  audio?.addEventListener("ended", () => {
+    console.log("song ended = auto playing");
+    nextSong();
+  });
+
+  audio?.addEventListener("pause", () => {
+    isPlaying = false;
+    playIcon?.classList.remove("hidden");
+    pauseIcon?.classList.add("hidden");
+  });
+
+  audio?.addEventListener("play", () => {
+    isPlaying = true;
+    playIcon?.classList.add("hidden");
+    pauseIcon?.classList.remove("hidden");
+  });
+
   document.addEventListener(
     "click",
-    () => {
-      if (audio && audio.paused) {
+    (e) => {
+      if (audio && audio.paused && e.target !== playPauseBtn) {
         audio.play().catch(console.error);
-        showToast({
-          title: "🎵 Audio Started",
-          variant: "success",
-          duration: 700,
-        });
       }
     },
     { once: true }
