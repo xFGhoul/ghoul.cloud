@@ -489,7 +489,16 @@
     "click",
     (e) => {
       if (audio && audio.paused && e.target !== playPauseBtn) {
-        audio.play().catch(console.error);
+        audio.play().then(() => {
+          isPlaying = true;
+          playIcon?.classList.add("hidden");
+          pauseIcon?.classList.remove("hidden");
+          showToast({
+            title: "🎵 Audio Started",
+            variant: "success",
+            duration: 700,
+          });
+        }).catch(console.error);
       }
     },
     { once: true }
