@@ -284,6 +284,8 @@
   import { showToast } from "~/components/ui/toast";
 
   const audio = document.getElementById("background-audio") as HTMLAudioElement;
+  audio.volume = 0.3;
+
   const musicPlayer = document.getElementById("music-player");
   const playPauseBtn = document.getElementById("play-pause-btn");
   const playIcon = playPauseBtn?.querySelector(".play-icon");
@@ -294,7 +296,7 @@
   const songs = [
     {
       file: "audio/congratulations.mp3",
-      title: "Congratulations",
+      title: "Congratulations (Instrumental)",
       artist: "Mac Miller",
       cover: "/covers/congratulations.jpeg",
     },
