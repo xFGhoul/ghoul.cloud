@@ -233,7 +233,7 @@
     }
 
     .player-controls {
-      flex-shrink: 0; 
+      flex-shrink: 0;
     }
 
     .control-btn {
@@ -424,9 +424,7 @@
 
     if (audio) {
       audio.src = currentSong.file;
-      if (!isPlaying) {
-        audio.load();
-      }
+      audio.load();
     }
   }
 
@@ -521,7 +519,17 @@
   });
 
   audio?.addEventListener("ended", () => {
-    nextSong();
+    console.log("Song ended, auto-playing next song");
+    currentSongIndex = (currentSongIndex + 1) % songs.length;
+    updateSongInfo();
+
+    audio.addEventListener(
+      "loadeddata",
+      () => {
+        audio.play().catch(console.error);
+      },
+      { once: true }
+    );
   });
 
   audio?.addEventListener("pause", () => {
@@ -538,8 +546,8 @@
 
   document.addEventListener(
     "click",
-    (e) => {
-      if (audio && audio.paused && e.target !== playPauseBtn) {
+    () => {
+      if (audio && audio.paused) {
         audio
           .play()
           .then(() => {
