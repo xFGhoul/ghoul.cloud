@@ -12,7 +12,7 @@
 
 This is the source code for [ghoul.cloud](https://ghoul.cloud), my personal website.
 
-### Prerequisites
+## Prerequisites
 
 - [Bun](https://bun.sh/)
 - [Docker](https://www.docker.com/)
