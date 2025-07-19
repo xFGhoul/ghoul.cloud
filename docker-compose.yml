@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: ghoul-cloud-home
+    container_name: home
     ports:
       - "4321:4321"
     volumes:
