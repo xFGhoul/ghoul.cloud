@@ -1,5 +1,7 @@
 ---
 import { Toaster } from "~/components/ui/toast";
+
+const rybbitSiteId = "c828a6fa1606";
 ---
 
 <!doctype html>
@@ -11,6 +13,13 @@ import { Toaster } from "~/components/ui/toast";
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>🐳 Home</title>
+
+    <script
+      src="https://analytics.ghoul.cloud/api/script.js"
+      data-site-id={rybbitSiteId}
+      async
+      defer
+    ></script>
   </head>
   <body>
     <slot />
