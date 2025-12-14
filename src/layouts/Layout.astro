@@ -1,7 +1,9 @@
 ---
 import { Toaster } from "~/components/ui/toast";
+import "~/styles/layout.css";
 
-const rybbitSiteId = "c828a6fa1606";
+const rybbitSiteId = import.meta.env.RYBBIT_SITE_ID;
+const isProd = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -14,24 +16,17 @@ const rybbitSiteId = "c828a6fa1606";
     <meta name="generator" content={Astro.generator} />
     <title>🐳 Home</title>
 
-    <script
-      src="https://analytics.ghoul.cloud/api/script.js"
-      data-site-id={rybbitSiteId}
-      async
-      defer
-    ></script>
+    {isProd && (
+      <script
+        src="https://analytics.ghoul.cloud/api/script.js"
+        data-site-id={rybbitSiteId}
+        async
+        defer
+      ></script>
+    )}
   </head>
   <body>
     <slot />
     <Toaster client:load />
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

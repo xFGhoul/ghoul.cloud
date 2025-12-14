@@ -1,14 +1,25 @@
 ---
+import Layout from "~/layouts/Layout.astro";
 import Audio from "~/components/Audio.astro";
 import Background from "~/components/Background.astro";
-import Home from "~/components/Home.astro";
-import Layout from "~/layouts/Layout.astro";
+import Skills from "~/components/Skills.astro";
+import About from "~/components/About.astro";
+import Contact from "~/components/Contact.astro";
+import Discord from "~/components/Discord.astro";
 
 import "~/styles/globals.css";
+import "~/styles/portfolio.css";
 ---
 
 <Layout>
-  <Home />
+  <div class="portfolio-container">
+    <div class="portfolio-grid">
+        <About />  
+        <Skills />
+        <Discord />
+        <Contact />
+    </div>
+  </div>
   <Background />
   <Audio />
 </Layout>

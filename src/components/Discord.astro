@@ -1,0 +1,261 @@
+---
+import "~/styles/discord.css";
+
+const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
+---
+
+<div class="glass-card discord-card" data-userid={LANYARD_USER_ID}>
+  <div class="discord-content">
+    <div class="discord-header">
+      <img id="avatar" class="discord-avatar" src="" />
+      <div class="discord-user-info" id="margin">
+        <h3 id="display" class="discord-display-name"></h3>
+        <p id="username" class="discord-username"></p>
+      </div>
+    </div>
+
+    <div class="activities-section">
+      <div class="activities"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { lanyard } from "~/lib/lanyard";
+
+  const discordCard = document.querySelector(".discord-card") as HTMLElement;
+  const userid = discordCard?.dataset.userid as string;
+
+  if (!userid) {
+    console.error("[Discord] LANYARD_USER_ID environment variable is not set!");
+  }
+
+  let acts: any[] = [];
+
+  const getPfpUrl = (
+    id: string,
+    discrim?: string,
+    avatar?: string | null,
+  ): string => {
+    if (avatar && avatar !== null) {
+      return `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
+    }
+    if (discrim && discrim !== null && discrim !== "0") {
+      return `https://cdn.discordapp.com/embed/avatars/${parseInt(discrim) % 5}.png`;
+    }
+    return `https://cdn.discordapp.com/embed/avatars/${id.charCodeAt(id.length - 1) % 5}.png`;
+  };
+
+  const formatTime = (ms: number): string => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const pad = (num: number) => num.toString().padStart(2, "0");
+
+    if (hours > 0) {
+      return `${hours}:${pad(minutes)}:${pad(seconds)}`;
+    }
+    return `${minutes}:${pad(seconds)}`;
+  };
+
+  const load = () => {
+    const avaElem = document.getElementById("avatar") as HTMLImageElement;
+    if (avaElem) {
+      avaElem.src = getPfpUrl(userid, undefined, undefined);
+    }
+
+    lanyard({
+      userId: userid,
+      socket: true,
+      onPresenceUpdate: update,
+    });
+  };
+
+  const update = (data: any) => {
+    acts = data.activities;
+    draw(data);
+  };
+
+  const draw = (data: any) => {
+    const displayNameElem = document.getElementById("display");
+    if (displayNameElem) {
+      displayNameElem.innerText = data.discord_user.global_name;
+    }
+
+    const nameElem = document.getElementById("username");
+    if (nameElem) {
+      nameElem.innerText = data.discord_user.username;
+    }
+
+    const avaElem = document.getElementById("avatar") as HTMLImageElement;
+    if (avaElem) {
+      avaElem.src = getPfpUrl(
+        data.discord_user.id,
+        data.discord_user.discriminator,
+        data.discord_user.avatar,
+      );
+    }
+
+    const actsWrapper = document.querySelector(".activities");
+    const activitiesSection = document.querySelector(
+      ".activities-section",
+    ) as HTMLElement;
+
+    if (!actsWrapper) return;
+
+    const toRemove: ChildNode[] = [];
+    actsWrapper.childNodes.forEach((node: ChildNode) => {
+      if (
+        node instanceof HTMLElement &&
+        acts.filter((act) => act.id == node.id).length === 0
+      ) {
+        toRemove.push(node);
+      }
+    });
+    toRemove.forEach((node) => actsWrapper.removeChild(node));
+
+    if (acts.length === 0) {
+      if (activitiesSection) activitiesSection.style.display = "none";
+      return;
+    } else {
+      if (activitiesSection) activitiesSection.style.display = "block";
+    }
+
+    acts.forEach((act: any) => {
+      if (act.type === 4) return;
+
+      if (document.getElementById(act.id)) return;
+
+      const isSpotify = act.id === "spotify:1" && data.spotify;
+
+      const actElem = document.createElement("div");
+      actElem.classList.add("activity");
+      actElem.id = act.id;
+
+      // Activity header
+      const actHeader = document.createElement("div");
+      actHeader.classList.add("activity-header");
+      const actType = document.createElement("span");
+      actType.classList.add("activity-type");
+      actType.innerText = isSpotify ? "Listening to Spotify" : "Playing";
+      actHeader.appendChild(actType);
+      actElem.appendChild(actHeader);
+
+      // Activity content
+      const actContent = document.createElement("div");
+      actContent.classList.add("activity-content");
+
+      // Image wrapper
+      const actImageWrapper = document.createElement("div");
+      actImageWrapper.classList.add("act-images");
+
+      const largeImageElem = document.createElement("img");
+      largeImageElem.classList.add("largeimage");
+      largeImageElem.draggable = false;
+
+      if (isSpotify) {
+        largeImageElem.src = data.spotify.album_art_url;
+      } else {
+        if (act.assets && act.assets.large_image) {
+          largeImageElem.src = `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.png`;
+        } else {
+          largeImageElem.src = `https://dcdn.dstn.to/app-icons/${act.application_id}`;
+        }
+      }
+      actImageWrapper.appendChild(largeImageElem);
+
+      if ((act.assets && act.assets.small_image) || isSpotify) {
+        const smallImageElem = document.createElement("img");
+        smallImageElem.classList.add("smallimage");
+        smallImageElem.draggable = false;
+        if (isSpotify) {
+          smallImageElem.src =
+            "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png";
+        } else {
+          smallImageElem.src = `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.png`;
+        }
+        actImageWrapper.appendChild(smallImageElem);
+      }
+
+      actContent.appendChild(actImageWrapper);
+
+      // Activity details
+      const actDetails = document.createElement("div");
+      actDetails.classList.add("activity-details");
+
+      const nameSpan = document.createElement("div");
+      nameSpan.classList.add("act-name");
+      const detailsSpan = document.createElement("div");
+      detailsSpan.classList.add("act-details");
+      const stateSpan = document.createElement("div");
+      stateSpan.classList.add("act-state");
+
+      if (isSpotify) {
+        nameSpan.innerText = data.spotify.song;
+        stateSpan.innerText = data.spotify.artist;
+
+        actDetails.appendChild(nameSpan);
+        actDetails.appendChild(stateSpan);
+
+        if (data.spotify.timestamps) {
+          const progressWrapper = document.createElement("div");
+          progressWrapper.classList.add("spotify-progress");
+
+          const timeStart = document.createElement("span");
+          timeStart.classList.add("time-start");
+          const timeEnd = document.createElement("span");
+          timeEnd.classList.add("time-end");
+
+          const progressBar = document.createElement("div");
+          progressBar.classList.add("progress-bar");
+          const progressFill = document.createElement("div");
+          progressFill.classList.add("progress-fill");
+          progressBar.appendChild(progressFill);
+
+          const updateProgress = () => {
+            const now = Date.now();
+            const elapsed = now - data.spotify.timestamps.start;
+            const total =
+              data.spotify.timestamps.end - data.spotify.timestamps.start;
+            const percent = Math.min((elapsed / total) * 100, 100);
+
+            progressFill.style.width = `${percent}%`;
+            timeStart.innerText = formatTime(elapsed);
+            timeEnd.innerText = formatTime(total);
+          };
+
+          updateProgress();
+          setInterval(updateProgress, 1000);
+
+          progressWrapper.appendChild(timeStart);
+          progressWrapper.appendChild(progressBar);
+          progressWrapper.appendChild(timeEnd);
+          actDetails.appendChild(progressWrapper);
+        }
+      } else {
+        nameSpan.innerText = act.name || "";
+
+        if (act.details) {
+          detailsSpan.innerHTML = `${act.details}`;
+        }
+
+        if (act.state) {
+          stateSpan.innerHTML = `${act.state}`;
+        }
+
+        actDetails.appendChild(nameSpan);
+        actDetails.appendChild(detailsSpan);
+        actDetails.appendChild(stateSpan);
+      }
+
+      actContent.appendChild(actDetails);
+      actElem.appendChild(actContent);
+
+      actsWrapper.appendChild(actElem);
+    });
+  };
+
+  window.addEventListener("load", load);
+</script>
