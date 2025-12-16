@@ -1,0 +1,44 @@
+name: Remote Deployment
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Add SSH Private Key To Agent
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  
+
+      - name: Deploy To Server
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          APP_DIR: ${{ secrets.APP_DIR }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP << 'ENDSSH'
+            set -e  # Exit on Error
+            cd $APP_DIR
+            echo "📦 Pulling Latest Changes..."
+            git remote set-url origin git@github.com:xFGhoul/ghoul.cloud.git
+            git pull origin dev
+            echo "📥 Installing Dependencies..."
+            bun install
+            echo "🔨 Building Project..."
+            bun run build
+            echo "📋 Copying Files..."
+            bun run copy
+            echo "🔐 Setting Permissions..."
+            sudo chown -R ghoul:dev /home/ghoul/home
+            sudo chmod -R 775 /home/ghoul/home
+            sudo chmod g+s /home/ghoul/home
+            echo "✅ Deployment Complete!"
+          ENDSSH

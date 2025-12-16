@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "astro dev",
 		"build": "astro build",
+		"copy": "rsync -avz --progress --delete /home/ghoul/github/ghoul.cloud/dist/ /home/ghoul/home/",
 		"preview": "astro preview",
 		"astro": "astro"
 	},
