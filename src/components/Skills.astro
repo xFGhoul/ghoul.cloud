@@ -10,8 +10,10 @@ import { tools } from "~/data/tools";
   <div class="skills-grid">
     {tools.map((tool) => (
       <div class="skill-item">
-        <img src={tool.icon} alt={tool.name} class="skill-icon" />
-        <span class="skill-name">{tool.name}</span>
+        <a href={tool.link} target="_blank">
+          <img src={tool.icon} alt={tool.name} class="skill-icon" />
+          <span class="skill-name">{tool.name}</span>
+        </a>
       </div>
     ))}
   </div>

@@ -3,6 +3,7 @@ import { Toaster } from "~/components/ui/toast";
 import "~/styles/layout.css";
 
 const rybbitSiteId = import.meta.env.RYBBIT_SITE_ID;
+const analyticsEnabled = import.meta.env.ANALYTICS_ENABLED;
 const isProd = import.meta.env.PROD;
 ---
 
@@ -16,7 +17,7 @@ const isProd = import.meta.env.PROD;
     <meta name="generator" content={Astro.generator} />
     <title>🐳 Home</title>
 
-    {isProd && (
+    {isProd && analyticsEnabled && (
       <script
         src="https://analytics.ghoul.cloud/api/script.js"
         data-site-id={rybbitSiteId}
