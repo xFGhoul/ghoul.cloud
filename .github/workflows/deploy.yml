@@ -24,24 +24,32 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           APP_DIR: ${{ secrets.APP_DIR }}
         run: |
-         ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "bash -s" << ENDSSH
-            set -e  # Exit on Error
-            APP_DIR="${{ secrets.APP_DIR }}"
-            cd \$APP_DIR
-            echo "APP_DIR: \$APP_DIR"
-            echo "🚀 Starting Deployment..."
-            echo "📦 Pulling Latest Changes..."
-            git remote set-url origin git@github.com:xFGhoul/ghoul.cloud.git
-            git pull origin dev
-            echo "📥 Installing Dependencies..."
-            bun install
-            echo "🔨 Building Project..."
-            bun run build
-            echo "📋 Copying Files..."
-            bun run copy
-            echo "🔐 Setting Permissions..."
-            sudo chown -R ghoul:dev /home/ghoul/home
-            sudo chmod -R 775 /home/ghoul/home
-            sudo chmod g+s /home/ghoul/home
-            echo "✅ Deployment Complete!"
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "bash -s" << 'ENDSSH'
+          
+          echo "🚀 Starting Deployment..."
+          set -e
+          APP_DIR="${{ secrets.APP_DIR }}"
+          echo "APP_DIR: $APP_DIR"
+
+
+          echo "📦 Pulling Latest Changes..."
+          cd $APP_DIR
+          git remote set-url origin git@github.com:xFGhoul/ghoul.cloud.git
+          git pull origin dev
+
+          echo "📥 Installing Dependencies..."
+          bun install
+
+          echo "🔨 Building Project..."
+          bun run build
+
+          echo "📋 Copying Files..."
+          bun run copy
+
+          echo "🔐 Setting Permissions..."
+          sudo chown -R ghoul:dev /home/ghoul/home
+          sudo chmod -R 775 /home/ghoul/home
+          sudo chmod g+s /home/ghoul/home
+          echo "✅ Deployment Complete!"
+
           ENDSSH
