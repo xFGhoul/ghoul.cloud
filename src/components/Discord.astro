@@ -7,7 +7,10 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 <div class="glass-card discord-card" data-userid={LANYARD_USER_ID}>
   <div class="discord-content">
     <div class="discord-header">
-      <img id="avatar" class="discord-avatar" src="" />
+      <div class="avatar-wrapper">
+        <img id="avatar" class="discord-avatar" src="" />
+        <img id="status-indicator" class="status-indicator" src="" />
+      </div>
       <div class="discord-user-info" id="margin">
         <h3 id="display" class="discord-display-name"></h3>
         <p id="username" class="discord-username"></p>
@@ -16,6 +19,9 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
     <div class="activities-section">
       <div class="activities"></div>
+      <div class="no-activities" id="no-activities" style="display: none;">
+        <span>💤</span>
+      </div>
     </div>
   </div>
 </div>
@@ -31,6 +37,13 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
   }
 
   let acts: any[] = [];
+
+  const statusIcons: Record<string, string> = {
+    online: "/icons/online.svg",
+    idle: "/icons/idle.svg",
+    dnd: "/icons/dnd.svg",
+    offline: "/icons/offline.svg",
+  };
 
   const getPfpUrl = (
     id: string,
@@ -60,6 +73,15 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
     return `${minutes}:${pad(seconds)}`;
   };
 
+  const updateStatus = (status: string) => {
+    const statusIndicator = document.getElementById(
+      "status-indicator",
+    ) as HTMLImageElement;
+    if (statusIndicator) {
+      statusIndicator.src = statusIcons[status] || statusIcons.offline;
+    }
+  };
+
   const load = () => {
     const avaElem = document.getElementById("avatar") as HTMLImageElement;
     if (avaElem) {
@@ -75,6 +97,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
   const update = (data: any) => {
     acts = data.activities;
+    updateStatus(data.discord_status);
     draw(data);
   };
 
@@ -99,9 +122,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
     }
 
     const actsWrapper = document.querySelector(".activities");
-    const activitiesSection = document.querySelector(
-      ".activities-section",
-    ) as HTMLElement;
+    const noActivities = document.getElementById("no-activities");
 
     if (!actsWrapper) return;
 
@@ -116,11 +137,13 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
     });
     toRemove.forEach((node) => actsWrapper.removeChild(node));
 
-    if (acts.length === 0) {
-      if (activitiesSection) activitiesSection.style.display = "none";
+    const visibleActivities = acts.filter((act) => act.type !== 4);
+
+    if (visibleActivities.length === 0) {
+      if (noActivities) noActivities.style.display = "flex";
       return;
     } else {
-      if (activitiesSection) activitiesSection.style.display = "block";
+      if (noActivities) noActivities.style.display = "none";
     }
 
     acts.forEach((act: any) => {
@@ -134,7 +157,6 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
       actElem.classList.add("activity");
       actElem.id = act.id;
 
-      // Activity header
       const actHeader = document.createElement("div");
       actHeader.classList.add("activity-header");
       const actType = document.createElement("span");
@@ -143,11 +165,9 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
       actHeader.appendChild(actType);
       actElem.appendChild(actHeader);
 
-      // Activity content
       const actContent = document.createElement("div");
       actContent.classList.add("activity-content");
 
-      // Image wrapper
       const actImageWrapper = document.createElement("div");
       actImageWrapper.classList.add("act-images");
 
@@ -181,7 +201,6 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
       actContent.appendChild(actImageWrapper);
 
-      // Activity details
       const actDetails = document.createElement("div");
       actDetails.classList.add("activity-details");
 

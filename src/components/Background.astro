@@ -20,7 +20,7 @@ import "~/styles/background.css";
 <script>
   import { showToast } from "~/components/ui/toast";
   import mobile from "is-mobile";
-  
+
   const isMobile = mobile();
   const spinner = document.getElementById("loading-spinner");
   const background = document.getElementById("background");
@@ -38,11 +38,13 @@ import "~/styles/background.css";
         background.style.opacity = "0.6";
       }
 
-      showToast({
-        title: "🍱 Background Loaded",
-        variant: "success",
-        duration: 700,
-      });
+      if (!isMobile) {
+        showToast({
+          title: "🍱 Background Loaded",
+          variant: "success",
+          duration: 700,
+        });
+      }
 
       window.dispatchEvent(new CustomEvent("backgroundLoaded"));
     }

@@ -19,6 +19,10 @@ This is the source code for [ghoul.cloud](https://ghoul.cloud), my personal webs
 
 ## Building 🏗️
 
+### Env
+
+Fill out the environment variables found in `.env.example`
+
 ### Docker 🐳
 
 ```sh
@@ -39,12 +43,15 @@ ghoul.cloud/
 ├── public/
 │   ├── audio/          # Music Files
 │   ├── covers/         # Album Artwork
+│   ├── avatars/        # Discord Avatars
+│   ├── icons/          # Icons Used
+│   ├── gogo-mobile     # Mobile Background Video
 │   └── gojo.mp4        # Background Video
 ├── src/
-│   ├── components/     
-│   │   ├── Audio.astro 
-│   │   ├── Background.astro
-│   │   └── Home.astro
+│   ├── components/     # Components
+│   ├── config/         # Site Config
+│   ├── lib/            # Utils
+│   ├── data/           # Song Data
 │   ├── layouts/        # Page Layouts
 │   ├── pages/          # Route Pages
 │   └── styles/         # Global Styles
@@ -55,8 +62,8 @@ ghoul.cloud/
 
 ## Roadmap 🚚
 
-- [x] Improved UI
-- [x] More Widgets
+- [] Analytic Opt-In/Removal
+- [] Custom Game
 
 ## Contributing 👥
 

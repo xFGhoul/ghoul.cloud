@@ -113,6 +113,9 @@ import "~/styles/audio.css";
 <script>
   import { showToast } from "~/components/ui/toast";
   import { songs } from "~/data/songs";
+  import mobile from "is-mobile";
+  
+  const isMobile = mobile();
 
   const audio = document.getElementById("background-audio") as HTMLAudioElement;
   audio.volume = 0.3;
@@ -150,6 +153,16 @@ import "~/styles/audio.css";
     }
   }
 
+  function toastAudioStarted() {
+    if (isMobile) return;
+
+    showToast({
+      title: "🎵 Audio Started",
+      variant: "success",
+      duration: 700,
+    });
+  }
+
   function togglePlayPause() {
     if (audio) {
       if (audio.paused) {
@@ -159,11 +172,7 @@ import "~/styles/audio.css";
             isPlaying = true;
             playIcon?.classList.add("hidden");
             pauseIcon?.classList.remove("hidden");
-            showToast({
-              title: "🎵 Audio Started",
-              variant: "success",
-              duration: 700,
-            });
+            toastAudioStarted();
           })
           .catch(console.error);
       } else {
@@ -227,19 +236,11 @@ import "~/styles/audio.css";
   musicToggleBtn?.addEventListener("click", showPlayer);
 
   window.addEventListener("backgroundLoaded", () => {
-    const isMobile = window.innerWidth <= 768;
-
     if (!isMobile) {
       musicPlayer?.classList.add("visible");
     } else {
       musicToggleBtn?.classList.remove("hidden");
     }
-
-    showToast({
-      title: "🎵 Hit Play to Start Audio",
-      variant: "info",
-      duration: 2000,
-    });
   });
 
   audio?.addEventListener("ended", () => {

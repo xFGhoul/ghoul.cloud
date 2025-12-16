@@ -43,6 +43,12 @@ export const songs: Song[] = [
 		cover: "/covers/moth_balls.jpeg",
 	},
 	{
+		file: "audio/fragment.mp3",
+		title: "Fragment Ornament",
+		artist: "Kanon Wakeshima",
+		cover: "/covers/fragment.jpg",
+	},
+	{
 		file: "audio/you_made_it.mp3",
 		title: "You Made It",
 		artist: "PARTYNEXTDOOR",
@@ -107,5 +113,11 @@ export const songs: Song[] = [
 		title: "Blessed",
 		artist: "Daniel Caeser",
 		cover: "/covers/daniel_caeser.jpeg",
+	},
+	{
+		file: "audio/luminescence.mp3",
+		title: "Luminescence Q.E.D.",
+		artist: "Kanon Wakeshima",
+		cover: "/covers/luminescence.jpg",
 	},
 ];
