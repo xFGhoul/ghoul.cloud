@@ -31,6 +31,9 @@ jobs:
           APP_DIR="${{ secrets.APP_DIR }}"
           echo "APP_DIR: $APP_DIR"
 
+          # Add bun to PATH
+          export PATH="/home/ghoul/.bun/bin:$PATH"
+
 
           echo "📦 Pulling Latest Changes..."
           cd $APP_DIR
