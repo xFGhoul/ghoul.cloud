@@ -27,6 +27,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'ENDSSH'
             set -e  # Exit on Error
             cd $APP_DIR
+            echo "APP_DIR: $APP_DIR"
+            echo "🚀 Starting Deployment..."
             echo "📦 Pulling Latest Changes..."
             git remote set-url origin git@github.com:xFGhoul/ghoul.cloud.git
             git pull origin dev
