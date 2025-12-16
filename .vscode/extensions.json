@@ -1,4 +1,11 @@
 {
-	"recommendations": ["astro-build.astro-vscode"],
+	"recommendations": [
+		"astro-build.astro-vscode",
+		"sanjulaganepola.github-local-actions",
+		"biomejs.biome",
+		"fill-labs.dependi",
+		"usernamehw.errorlens",
+		"yoavbls.pretty-ts-errors"
+	],
 	"unwantedRecommendations": []
 }
