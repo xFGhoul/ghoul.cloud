@@ -1,9 +1,15 @@
 import { config } from "~/config/config";
 
-// biome-ignore lint/suspicious/noExplicitAny: TODO: Define Options Interface
-export async function lanyard(opts: any) {
+interface LanyardOptions {
+	userID: string;
+	socket: boolean;
+	// biome-ignore lint/suspicious/noExplicitAny: TODO: Add type definitions for Lanyard responses
+	onPresenceUpdate: (data: any) => void;
+}
+
+export async function lanyard(opts: LanyardOptions) {
 	if (!opts) throw new Error("Specify an options object");
-	if (!opts.userId) throw new Error("Specify a user ID");
+	if (!opts.userID) throw new Error("Specify a user ID");
 
 	if (opts.socket) {
 		if (!opts.onPresenceUpdate)
@@ -14,21 +20,18 @@ export async function lanyard(opts: any) {
 			throw new Error("Browser doesn't support WebSocket connections.");
 
 		const socket = new WebSocket(config.lanyard.WEBSOCKET_URL);
-		const subscription =
-			typeof opts.userId === "string" ? "subscribe_to_id" : "subscribe_to_ids";
 
 		socket.addEventListener("open", () => {
 			socket.send(
 				JSON.stringify({
 					op: 2,
 					d: {
-						[subscription]: opts.userId,
+						[config.lanyard.SUBSCRIPTION]: opts.userID,
 					},
 				}),
 			);
 
 			setInterval(() => {
-				console.log("[Lanyard] Sending heartbeat");
 				socket.send(
 					JSON.stringify({
 						op: 3,
@@ -54,30 +57,13 @@ export async function lanyard(opts: any) {
 
 		return socket;
 	} else {
-		if (typeof opts.userId === "string") {
-			const url = `${config.lanyard.API_URL}/users/${opts.userId}`;
-			const res = await fetch(url);
-			const body = await res.json();
+		const url = `${config.lanyard.API_URL}/users/${opts.userID}`;
+		const res = await fetch(url);
+		const body = await res.json();
+		
+		if (!body.success)
+			throw new Error(body.error?.message || "An invalid error occured");
 
-			if (!body.success)
-				throw new Error(body.error?.message || "An invalid error occured");
-
-			return body.data;
-		} else {
-			const val = [];
-
-			for (const userId of opts.userId) {
-				const url = `${config.lanyard.API_URL}/users/${userId}`;
-				const res = await fetch(url);
-				const body = await res.json();
-
-				if (!body.success)
-					throw new Error(body.error?.message || "An invalid error occured");
-
-				val.push(body.data);
-			}
-
-			return val;
-		}
+		return body.data;
 	}
 }

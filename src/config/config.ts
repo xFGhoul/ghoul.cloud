@@ -3,5 +3,6 @@ export const config = {
 		API_URL: "https://api.lanyard.rest/v1",
 		WEBSOCKET_URL: "wss://api.lanyard.rest/socket",
 		HEARTBEAT_PERIOD: 1000 * 30,
+		SUBSCRIPTION: "subscribe_to_id"
 	},
 };

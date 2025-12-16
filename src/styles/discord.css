@@ -166,21 +166,6 @@
 	white-space: nowrap;
 }
 
-.act-time {
-	font-size: 0.8rem;
-	font-weight: 600;
-	color: white;
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-	margin-top: 0.25rem;
-}
-
-.emoji {
-	font-size: 0.9em;
-	flex-shrink: 0;
-}
-
 .spotify-progress {
 	display: flex;
 	align-items: center;

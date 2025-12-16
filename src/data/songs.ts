@@ -80,7 +80,7 @@ export const songs: Song[] = [
 	},
 	{
 		file: "audio/deus_absconditus.mp3",
-		title: "Deus Absconditus ||",
+		title: "Deus Absconditus II",
 		artist: "Xanthochroid",
 		cover: "/covers/blessed_he_who_boils.jpg",
 	},
