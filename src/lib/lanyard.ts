@@ -3,7 +3,7 @@ import { config } from "~/config/config";
 interface LanyardOptions {
 	userID: string;
 	socket: boolean;
-	// biome-ignore lint/suspicious/noExplicitAny: TODO: Add type definitions for Lanyard responses
+	// biome-ignore lint/suspicious/noExplicitAny: Data is too susceptible to change, keeping as any for future compatability.
 	onPresenceUpdate: (data: any) => void;
 }
 
@@ -60,7 +60,7 @@ export async function lanyard(opts: LanyardOptions) {
 		const url = `${config.lanyard.API_URL}/users/${opts.userID}`;
 		const res = await fetch(url);
 		const body = await res.json();
-		
+
 		if (!body.success)
 			throw new Error(body.error?.message || "An invalid error occured");
 

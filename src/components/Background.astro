@@ -1,4 +1,6 @@
 ---
+import { config } from "~/config/config";
+
 import "~/styles/background.css";
 ---
 
@@ -8,7 +10,7 @@ import "~/styles/background.css";
 
 <div class="background" id="background">
   <video
-    src="gojo.mp4"
+    src={config.background.video}
     autoplay
     muted
     loop
@@ -19,6 +21,8 @@ import "~/styles/background.css";
 
 <script>
   import { showToast } from "~/components/ui/toast";
+  import { config } from "~/config/config";
+
   import mobile from "is-mobile";
 
   const isMobile = mobile();
@@ -27,7 +31,7 @@ import "~/styles/background.css";
   const video = document.getElementById("background-video") as HTMLVideoElement;
 
   if (isMobile && video) {
-    video.src = "gojo-mobile.mp4";
+    video.src = config.background.mobile;
   }
 
   setTimeout(() => {
@@ -42,7 +46,7 @@ import "~/styles/background.css";
         showToast({
           title: "🍱 Background Loaded",
           variant: "success",
-          duration: 700,
+          duration: config.toast.duration,
         });
       }
 

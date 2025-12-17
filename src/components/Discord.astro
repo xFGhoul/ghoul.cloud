@@ -28,50 +28,18 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
 <script>
   import { lanyard } from "~/lib/lanyard";
+  import { config } from "~/config/config";
+  import { formatTime } from "~/lib/utils";
+  import { statusIcons, getPfpUrl } from "~/data/discord";
 
   const discordCard = document.querySelector(".discord-card") as HTMLElement;
-  const userid = discordCard?.dataset.userid as string;
+  const userID = discordCard?.dataset.userid as string;
 
-  if (!userid) {
+  if (!userID) {
     console.error("[Discord] LANYARD_USER_ID environment variable is not set!");
   }
 
   let acts: any[] = [];
-
-  const statusIcons: Record<string, string> = {
-    online: "/icons/online.svg",
-    idle: "/icons/idle.svg",
-    dnd: "/icons/dnd.svg",
-    offline: "/icons/offline.svg",
-  };
-
-  const getPfpUrl = (
-    id: string,
-    discrim?: string,
-    avatar?: string | null,
-  ): string => {
-    if (avatar && avatar !== null) {
-      return `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`;
-    }
-    if (discrim && discrim !== null && discrim !== "0") {
-      return `https://cdn.discordapp.com/embed/avatars/${parseInt(discrim) % 5}.png`;
-    }
-    return `https://cdn.discordapp.com/embed/avatars/${id.charCodeAt(id.length - 1) % 5}.png`;
-  };
-
-  const formatTime = (ms: number): string => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    const pad = (num: number) => num.toString().padStart(2, "0");
-
-    if (hours > 0) {
-      return `${hours}:${pad(minutes)}:${pad(seconds)}`;
-    }
-    return `${minutes}:${pad(seconds)}`;
-  };
 
   const updateStatus = (status: string) => {
     const statusIndicator = document.getElementById(
@@ -83,13 +51,13 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
   };
 
   const load = () => {
-    const avaElem = document.getElementById("avatar") as HTMLImageElement;
-    if (avaElem) {
-      avaElem.src = getPfpUrl(userid, undefined, undefined);
+    const avatarElem = document.getElementById("avatar") as HTMLImageElement;
+    if (avatarElem) {
+      avatarElem.src = getPfpUrl(userID, undefined, undefined);
     }
 
     lanyard({
-      userID: userid,
+      userID: userID,
       socket: true,
       onPresenceUpdate: update,
     });
@@ -97,6 +65,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
   const update = (data: any) => {
     acts = data.activities;
+
     updateStatus(data.discord_status);
     draw(data);
   };
@@ -159,9 +128,11 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
       const actHeader = document.createElement("div");
       actHeader.classList.add("activity-header");
+
       const actType = document.createElement("span");
       actType.classList.add("activity-type");
       actType.innerText = isSpotify ? "Listening to Spotify" : "Playing";
+
       actHeader.appendChild(actType);
       actElem.appendChild(actHeader);
 
@@ -179,9 +150,9 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
         largeImageElem.src = data.spotify.album_art_url;
       } else {
         if (act.assets && act.assets.large_image) {
-          largeImageElem.src = `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.large_image}.png`;
+          largeImageElem.src = `${config.discord.urls.assets}/${act.application_id}/${act.assets.large_image}.png`;
         } else {
-          largeImageElem.src = `https://dcdn.dstn.to/app-icons/${act.application_id}`;
+          largeImageElem.src = `${config.discord.urls.alternative}/${act.application_id}`;
         }
       }
       actImageWrapper.appendChild(largeImageElem);
@@ -191,10 +162,9 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
         smallImageElem.classList.add("smallimage");
         smallImageElem.draggable = false;
         if (isSpotify) {
-          smallImageElem.src =
-            "https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png";
+          smallImageElem.src = config.discord.urls.spotify;
         } else {
-          smallImageElem.src = `https://cdn.discordapp.com/app-assets/${act.application_id}/${act.assets.small_image}.png`;
+          smallImageElem.src = `${config.discord.urls.assets}/${act.application_id}/${act.assets.small_image}.png`;
         }
         actImageWrapper.appendChild(smallImageElem);
       }

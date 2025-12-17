@@ -4,40 +4,36 @@ import "~/styles/audio.css";
 
 <audio id="background-audio"></audio>
 
-<button
-  class="music-toggle-btn"
-  id="music-toggle-btn"
->
+<button class="music-toggle-btn" id="music-toggle-btn">
   <svg
+    xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
+    fill="currentColor"
+    class="icon icon-tabler icons-tabler-filled icon-tabler-headphones"
+    ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+      d="M21 18a3 3 0 0 1 -2.824 2.995l-.176 .005h-1a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-3a3 3 0 0 1 2.824 -2.995l.176 -.005h1c.351 0 .688 .06 1 .171v-.171a7 7 0 0 0 -13.996 -.24l-.004 .24v.17c.25 -.088 .516 -.144 .791 -.163l.209 -.007h1a3 3 0 0 1 2.995 2.824l.005 .176v3a3 3 0 0 1 -2.824 2.995l-.176 .005h-1a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-6a9 9 0 0 1 17.996 -.265l.004 .265v6z"
+    ></path></svg
   >
-    <path d="M9 18V5l12-2v13"></path>
-    <circle cx="6" cy="18" r="3"></circle>
-    <circle cx="18" cy="16" r="3"></circle>
-  </svg>
 </button>
 
 <div class="music-player" id="music-player">
-  <button
-    class="close-btn"
-    id="close-player-btn"
-  >
+  <button class="close-btn" id="close-player-btn">
     <svg
-      width="20"
-      height="20"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
       stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="icon icon-tabler icons-tabler-outline icon-tabler-x"
+      ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+        d="M18 6l-12 12"></path><path d="M6 6l12 12"></path></svg
     >
-      <line x1="18" y1="6" x2="6" y2="18"></line>
-      <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
   </button>
 
   <div class="player-content">
@@ -53,56 +49,61 @@ import "~/styles/audio.css";
     <div class="player-controls">
       <button class="control-btn" id="prev-btn">
         <svg
-          width="16"
-          height="16"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+          fill="currentColor"
+          class="icon icon-tabler icons-tabler-filled icon-tabler-player-skip-back"
+          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+            d="M19.496 4.136l-12 7a1 1 0 0 0 0 1.728l12 7a1 1 0 0 0 1.504 -.864v-14a1 1 0 0 0 -1.504 -.864z"
+          ></path><path
+            d="M4 4a1 1 0 0 1 .993 .883l.007 .117v14a1 1 0 0 1 -1.993 .117l-.007 -.117v-14a1 1 0 0 1 1 -1z"
+          ></path></svg
         >
-          <polygon points="19,20 9,12 19,4"></polygon>
-          <line x1="5" y1="19" x2="5" y2="5"></line>
-        </svg>
       </button>
 
       <button class="control-btn play-pause" id="play-pause-btn">
         <svg
-          class="play-icon"
-          width="20"
-          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+          fill="currentColor"
+          class="icon icon-tabler icons-tabler-filled icon-tabler-player-play play-icon"
+          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+            d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"
+          ></path></svg
         >
-          <polygon points="5,3 19,12 5,21"></polygon>
-        </svg>
         <svg
-          class="pause-icon hidden"
-          width="20"
-          height="20"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+          fill="currentColor"
+          class="pause-icon hidden icon icon-tabler icons-tabler-filled icon-tabler-player-pause"
+          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+            d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z"
+          ></path><path
+            d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z"
+          ></path></svg
         >
-          <rect x="6" y="4" width="4" height="16"></rect>
-          <rect x="14" y="4" width="4" height="16"></rect>
-        </svg>
       </button>
 
       <button class="control-btn" id="next-btn">
         <svg
-          width="16"
-          height="16"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+          fill="currentColor"
+          class="icon icon-tabler icons-tabler-filled icon-tabler-player-skip-forward"
+          ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+            d="M3 5v14a1 1 0 0 0 1.504 .864l12 -7a1 1 0 0 0 0 -1.728l-12 -7a1 1 0 0 0 -1.504 .864z"
+          ></path><path
+            d="M20 4a1 1 0 0 1 .993 .883l.007 .117v14a1 1 0 0 1 -1.993 .117l-.007 -.117v-14a1 1 0 0 1 1 -1z"
+          ></path></svg
         >
-          <polygon points="5,4 15,12 5,20"></polygon>
-          <line x1="19" y1="5" x2="19" y2="19"></line>
-        </svg>
       </button>
     </div>
   </div>
@@ -111,12 +112,14 @@ import "~/styles/audio.css";
 <script>
   import { showToast } from "~/components/ui/toast";
   import { songs } from "~/data/songs";
+  import { config } from "~/config/config";
+
   import mobile from "is-mobile";
-  
+
   const isMobile = mobile();
 
   const audio = document.getElementById("background-audio") as HTMLAudioElement;
-  audio.volume = 0.3;
+  audio.volume = config.audio.volume;
 
   const musicPlayer = document.getElementById("music-player");
   const musicToggleBtn = document.getElementById("music-toggle-btn");
@@ -157,7 +160,7 @@ import "~/styles/audio.css";
     showToast({
       title: "🎵 Audio Started",
       variant: "success",
-      duration: 700,
+      duration: config.toast.duration,
     });
   }
 
@@ -242,7 +245,6 @@ import "~/styles/audio.css";
   });
 
   audio?.addEventListener("ended", () => {
-    console.log("Song ended, auto-playing next song");
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     updateSongInfo();
 

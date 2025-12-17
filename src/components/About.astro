@@ -1,16 +1,18 @@
 ---
 import "~/styles/glass.css";
 import "~/styles/about.css";
+
+import { config } from "~/config/config";
 ---
 
 <div class="glass-card about-card">
   <div class="profile-image">
-    <img src="/avatars/star.png"/>
+    <img src="/avatars/star.png" />
   </div>
   <h2 class="profile-name">Ghoul</h2>
   <p class="profile-tagline">dev that loves to build things.</p>
   <div class="social-links">
-    <a href="https://github.ghoul.cloud" target="_blank" class="social-btn">
+    <a href={config.about.github} target="_blank" class="social-btn">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -23,7 +25,7 @@ import "~/styles/about.css";
         ></path>
       </svg>
     </a>
-    <a href="https://twitter.ghoul.cloud" target="_blank" class="social-btn">
+    <a href={config.about.twitter} target="_blank" class="social-btn">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -36,7 +38,7 @@ import "~/styles/about.css";
         ></path>
       </svg>
     </a>
-    <a class="social-btn" href="https://blog.ghoul.cloud" target="_blank">
+    <a class="social-btn" href={config.about.blog} target="_blank">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
