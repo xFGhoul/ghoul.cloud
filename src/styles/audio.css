@@ -4,7 +4,7 @@
 	right: 20px;
 	z-index: 100;
 
-	background: rgba(0, 0, 0, 0.4);
+	background: rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(10px);
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	border-radius: 16px;
@@ -130,9 +130,9 @@
 
 .close-btn {
 	position: absolute;
-	top: -12px;
-	right: -12px;
-	background: rgba(0, 0, 0, 0.2);
+	top: -13px;
+	right: -13px;
+	background: rgba(0, 0, 0, 0.1);
 	border: none;
 	border-radius: 50%;
 	width: 32px;

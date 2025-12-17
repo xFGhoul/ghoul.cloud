@@ -5,6 +5,7 @@
 		"biomejs.biome",
 		"fill-labs.dependi",
 		"usernamehw.errorlens",
-		"yoavbls.pretty-ts-errors"
+		"yoavbls.pretty-ts-errors",
+		"elijah-potter.harper"
 	],
 }
