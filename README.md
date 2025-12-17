@@ -19,7 +19,7 @@ This is the source code for [ghoul.cloud](https://ghoul.cloud), my personal webs
 
 ## Building 🏗️
 
-### Env
+### Environment Variables
 
 Fill out the environment variables found in `.env.example`
 
