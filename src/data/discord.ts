@@ -16,7 +16,7 @@ export const getPfpUrl = (
 		return `${config.discord.urls.avatar}/${id}/${avatar}.png`;
 	}
 	if (discriminator && discriminator !== null && discriminator !== "0") {
-		return `${config.discord.urls.avatar}/${parseInt(discriminator, 10) % 5}.png`;
+		return `${config.discord.urls.default}/${parseInt(discriminator, 10) % 5}.png`;
 	}
-	return `${config.discord.urls.avatar}/${id.charCodeAt(id.length - 1) % 5}.png`;
+	return `${config.discord.urls.default}/${id.charCodeAt(id.length - 1) % 5}.png`;
 };

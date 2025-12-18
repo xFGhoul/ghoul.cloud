@@ -26,6 +26,7 @@ export const config = {
 	discord: {
 		urls: {
 			avatar: "https://cdn.discordapp.com/avatars",
+			default: "https://cdn.discordapp.com/embed/avatars",
 			assets: "https://cdn.discordapp.com/app-assets",
 			alternative: "https://dcdn.dstn.to/app-icons",
 			spotify:

@@ -56,6 +56,11 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
       avatarElem.src = getPfpUrl(userID, undefined, undefined);
     }
 
+    const statusElem = document.getElementById("status-indicator") as HTMLImageElement;
+    if (statusElem) {
+      statusElem.src = statusIcons.offline;
+    }
+
     lanyard({
       userID: userID,
       socket: true,
