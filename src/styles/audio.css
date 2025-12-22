@@ -4,7 +4,7 @@
 	right: 20px;
 	z-index: 100;
 
-	background: rgba(0, 0, 0, 0.1);
+	background: rgba(0, 0, 0, 0.4);
 	backdrop-filter: blur(10px);
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	border-radius: 16px;
@@ -195,6 +195,7 @@
 		opacity: 0;
 		pointer-events: none;
 		transform: scale(0.8);
+		background: rgba(0, 0, 0, 0.1);
 	}
 
 	.music-player.visible {

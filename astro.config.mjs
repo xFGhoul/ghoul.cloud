@@ -11,7 +11,7 @@ const hosts = ["ghoul.cloud", "cdn.ghoul.cloud", "analytics.ghoul.cloud", "api.g
 // https://astro.build/config
 export default defineConfig({
     devToolbar: {
-        enabled: false,
+        enabled: true,
     },
     image: {
         domains: ["cdn.discordapp.com", "media.discordapp.net", "dcdn.dstn.to", "developer.spotify.com", "storage.googleapis.com"],
