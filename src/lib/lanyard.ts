@@ -8,16 +8,16 @@ interface LanyardOptions {
 }
 
 export async function lanyard(opts: LanyardOptions) {
-	if (!opts) throw new Error("Specify an options object");
-	if (!opts.userID) throw new Error("Specify a user ID");
+	if (!opts) throw new Error("Specify An Options Object");
+	if (!opts.userID) throw new Error("Specify An User ID");
 
 	if (opts.socket) {
 		if (!opts.onPresenceUpdate)
-			throw new Error("Specify onPresenceUpdate callback");
+			throw new Error("Specify onPresenceUpdate Callback");
 
 		const supportsWebSocket = "WebSocket" in window || "MozWebSocket" in window;
 		if (!supportsWebSocket)
-			throw new Error("Browser doesn't support WebSocket connections.");
+			throw new Error("Browser Doesn't Support WebSocket Connections.");
 
 		const socket = new WebSocket(config.lanyard.WEBSOCKET_URL);
 
@@ -62,7 +62,7 @@ export async function lanyard(opts: LanyardOptions) {
 		const body = await res.json();
 
 		if (!body.success)
-			throw new Error(body.error?.message || "An invalid error occured");
+			throw new Error(body.error?.message || "An Invalid Error Occured");
 
 		return body.data;
 	}

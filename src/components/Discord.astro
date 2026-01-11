@@ -36,7 +36,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
   const userID = discordCard?.dataset.userid as string;
 
   if (!userID) {
-    console.error("[Discord] LANYARD_USER_ID environment variable is not set!");
+    console.error("[Discord] LANYARD_USER_ID Environment Variable Missing!");
   }
 
   let acts: any[] = [];

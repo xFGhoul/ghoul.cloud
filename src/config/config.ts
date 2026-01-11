@@ -5,6 +5,9 @@ export const config = {
 		HEARTBEAT_PERIOD: 1000 * 30,
 		SUBSCRIPTION: "subscribe_to_id",
 	},
+	analytics: {
+		script: "https://analytics.ghoul.cloud/api/script.js",
+	},
 	toast: {
 		duration: 700,
 	},
@@ -57,4 +60,5 @@ export const config = {
 		`,
 		color: "#76b4f1ff",
 	},
+	title: "</ghoul>"
 };
