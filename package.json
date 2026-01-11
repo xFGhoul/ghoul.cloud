@@ -6,7 +6,8 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"astro": "astro"
+		"astro": "astro",
+		"copy": "rsync -avz --progress --delete /home/ghoul/github/ghoul.cloud/dist/ /home/ghoul/home/"
 	},
 	"dependencies": {
 		"@astrojs/solid-js": "5.1.3",
