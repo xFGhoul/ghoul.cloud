@@ -19,10 +19,6 @@ This is the source code for [ghoul.cloud](https://ghoul.cloud), my personal webs
 
 ## Building 🏗️
 
-### Environment Variables
-
-Fill out the environment variables found in `.env.example`
-
 ### Docker 🐳
 
 ```sh
@@ -62,7 +58,7 @@ ghoul.cloud/
 
 ## Roadmap 🚚
 
-- [] Analytic Opt-In/Removal
+- [x] Analytic Opt-In/Removal
 - [] Custom Game
 
 ## Contributing 👥

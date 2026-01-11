@@ -18,16 +18,14 @@ export async function getAnalytics(): Promise<boolean> {
 }
 
 function loadRybbitScript() {
-    const rybbitSiteId = import.meta.env.RYBBIT_SITE_ID;
-
     const existingScript = document.querySelector(
-        `script[data-site-id="${rybbitSiteId}"]`,
+        `script[data-site-id="${config.analytics.id}"]`,
     );
     if (existingScript) return;
 
     const script = document.createElement("script");
     script.src = config.analytics.script;
-    script.setAttribute("data-site-id", rybbitSiteId);
+    script.setAttribute("data-site-id", config.analytics.id);
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);

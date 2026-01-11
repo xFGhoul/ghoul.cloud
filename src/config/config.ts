@@ -7,6 +7,7 @@ export const config = {
 	},
 	analytics: {
 		script: "https://analytics.ghoul.cloud/api/script.js",
+		id: "c828a6fa1606"
 	},
 	toast: {
 		duration: 700,
@@ -27,6 +28,7 @@ export const config = {
 		email: "contact@ghoul.cloud",
 	},
 	discord: {
+		id: "433026067050266634",
 		urls: {
 			avatar: "https://cdn.discordapp.com/avatars",
 			default: "https://cdn.discordapp.com/embed/avatars",

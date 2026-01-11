@@ -1,10 +1,8 @@
 ---
 import "~/styles/discord.css";
-
-const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 ---
 
-<div class="glass-card discord-card" data-userid={LANYARD_USER_ID}>
+<div class="glass-card discord-card">
   <div class="discord-content">
     <div class="discord-header">
       <div class="avatar-wrapper">
@@ -37,13 +35,6 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
   import { formatTime } from "~/lib/utils";
   import { statusIcons, getPfpUrl } from "~/data/discord";
 
-  const discordCard = document.querySelector(".discord-card") as HTMLElement;
-  const userID = discordCard?.dataset.userid as string;
-
-  if (!userID) {
-    console.error("[Discord] LANYARD_USER_ID Environment Variable Missing!");
-  }
-
   let acts: any[] = [];
 
   const loadImage = (img: HTMLImageElement, src: string): Promise<void> => {
@@ -69,7 +60,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
   const load = () => {
     lanyard({
-      userID: userID,
+      userID: config.discord.id,
       socket: true,
       onPresenceUpdate: update,
     });
