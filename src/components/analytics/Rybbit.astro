@@ -1,0 +1,8 @@
+---
+import { config } from "~/config/config";
+
+const rybbitSiteId = import.meta.env.RYBBIT_SITE_ID;
+---
+
+<script src={config.analytics.script} data-site-id={rybbitSiteId} async defer
+></script>

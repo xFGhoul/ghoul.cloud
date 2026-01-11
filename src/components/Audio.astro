@@ -158,8 +158,9 @@ import "~/styles/audio.css";
     if (isMobile) return;
 
     showToast({
-      title: "🎵 Audio Started",
-      variant: "success",
+      title: "Playing Now",
+      icon: "/svgs/spotify.svg",
+      variant: "glass",
       duration: config.toast.duration,
     });
   }

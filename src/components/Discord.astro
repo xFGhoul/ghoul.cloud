@@ -8,8 +8,13 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
   <div class="discord-content">
     <div class="discord-header">
       <div class="avatar-wrapper">
-        <img id="avatar" class="discord-avatar" src="" fetchpriority="high"/>
-        <img id="status-indicator" class="status-indicator" src="" fetchpriority="high"/>
+        <img id="avatar" class="discord-avatar" src="" fetchpriority="high" />
+        <img
+          id="status-indicator"
+          class="status-indicator"
+          src=""
+          fetchpriority="high"
+        />
       </div>
       <div class="discord-user-info" id="margin">
         <h3 id="display" class="discord-display-name"></h3>
@@ -41,26 +46,28 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
   let acts: any[] = [];
 
+  const loadImage = (img: HTMLImageElement, src: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      img.onload = () => {
+        img.classList.add("loaded");
+        img.parentElement?.classList.add("loaded");
+        resolve();
+      };
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
   const updateStatus = (status: string) => {
     const statusIndicator = document.getElementById(
       "status-indicator",
     ) as HTMLImageElement;
     if (statusIndicator) {
-      statusIndicator.src = statusIcons[status] || statusIcons.offline;
+      loadImage(statusIndicator, statusIcons[status] || statusIcons.offline);
     }
   };
 
   const load = () => {
-    const avatarElem = document.getElementById("avatar") as HTMLImageElement;
-    if (avatarElem) {
-      avatarElem.src = getPfpUrl(userID, undefined, undefined);
-    }
-
-    const statusElem = document.getElementById("status-indicator") as HTMLImageElement;
-    if (statusElem) {
-      statusElem.src = statusIcons.offline;
-    }
-
     lanyard({
       userID: userID,
       socket: true,
@@ -75,7 +82,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
     draw(data);
   };
 
-  const draw = (data: any) => {
+  const draw = async (data: any) => {
     const displayNameElem = document.getElementById("display");
     if (displayNameElem) {
       displayNameElem.innerText = data.discord_user.global_name;
@@ -88,10 +95,13 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
 
     const avaElem = document.getElementById("avatar") as HTMLImageElement;
     if (avaElem) {
-      avaElem.src = getPfpUrl(
-        data.discord_user.id,
-        data.discord_user.discriminator,
-        data.discord_user.avatar,
+      await loadImage(
+        avaElem,
+        getPfpUrl(
+          data.discord_user.id,
+          data.discord_user.discriminator,
+          data.discord_user.avatar,
+        ),
       );
     }
 
@@ -120,7 +130,7 @@ const LANYARD_USER_ID = import.meta.env.LANYARD_USER_ID;
       if (noActivities) noActivities.style.display = "none";
     }
 
-    acts.forEach((act: any) => {
+    acts.forEach(async (act: any) => {
       if (act.type === 4) return;
 
       if (document.getElementById(act.id)) return;

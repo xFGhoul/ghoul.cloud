@@ -23,6 +23,8 @@ const toastVariants = cva(
 				error:
 					"error bg-red-500/40 backdrop-blur-[10px] border-red-400/30 text-white",
 				info: "info bg-blue-500/40 backdrop-blur-[10px] border-blue-400/30 text-white",
+				glass:
+					"bg-black/40 backdrop-blur-[10px] border-white/20 text-white hover:bg-[rgba(30,30,30,0.1)] hover:border-white/30",
 			},
 		},
 		defaultVariants: {
@@ -58,7 +60,7 @@ const Toaster = <T extends ValidComponent = "ol">(
 
 type ToastRootProps<T extends ValidComponent = "li"> =
 	ToastPrimitive.ToastRootProps<T> &
-		VariantProps<typeof toastVariants> & { class?: string | undefined };
+	VariantProps<typeof toastVariants> & { class?: string | undefined };
 
 const Toast = <T extends ValidComponent = "li">(
 	props: PolymorphicProps<T, ToastRootProps<T>>,
@@ -142,17 +144,38 @@ const ToastDescription = <T extends ValidComponent = "div">(
 function showToast(props: {
 	title?: JSX.Element;
 	description?: JSX.Element;
+	icon?: JSX.Element | string;
 	variant?: ToastVariant;
 	duration?: number;
 }) {
-	ToastPrimitive.toaster.show((data) => (
+	return ToastPrimitive.toaster.show((data) => (
 		<Toast
 			toastId={data.toastId}
 			variant={props.variant}
 			duration={props.duration}
 		>
 			<div class="grid gap-1">
-				{props.title && <ToastTitle>{props.title}</ToastTitle>}
+				{props.title && (
+					<ToastTitle>
+						<div class="flex items-center gap-2">
+							{props.icon && (
+								<span>
+									{typeof props.icon === "string" ? (
+										<img
+											src={props.icon}
+											alt=""
+											class="w-[18px] h-[18px]"
+											aria-hidden="true"
+										/>
+									) : (
+										props.icon
+									)}
+								</span>
+							)}
+							<span>{props.title}</span>
+						</div>
+					</ToastTitle>
+				)}
 				{props.description && (
 					<ToastDescription>{props.description}</ToastDescription>
 				)}

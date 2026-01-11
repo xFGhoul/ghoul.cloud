@@ -1,11 +1,11 @@
 ---
-import Background from "~/components/Background.astro";
-import Audio from "~/components/Audio.astro";
-import Layout from "~/layouts/Layout.astro";
-import Skills from "~/components/Skills.astro";
 import About from "~/components/About.astro";
+import Audio from "~/components/Audio.astro";
+import Background from "~/components/Background.astro";
 import Contact from "~/components/Contact.astro";
 import Discord from "~/components/Discord.astro";
+import Skills from "~/components/Skills.astro";
+import Layout from "~/layouts/Layout.astro";
 
 import "~/styles/portfolio.css";
 ---
@@ -28,9 +28,14 @@ import "~/styles/portfolio.css";
 </Layout>
 
 <script>
+  import { showAnalyticsToast } from "~/components/analytics/analyitcs";
   import { drawAscii } from "~/lib/utils";
 
   window.addEventListener("load", () => {
     drawAscii();
+
+    setTimeout(() => {
+      showAnalyticsToast();
+    }, 2000);
   });
 </script>

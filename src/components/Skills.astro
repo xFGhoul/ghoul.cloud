@@ -8,13 +8,15 @@ import { tools } from "~/data/tools";
 <div class="glass-card skills-card">
   <h3 class="card-title">Skills & Tools</h3>
   <div class="skills-grid">
-    {tools.map((tool) => (
-      <div class="skill-item">
-        <a href={tool.link} target="_blank">
-          <img src={tool.icon} alt={tool.name} class="skill-icon" />
-          <span class="skill-name">{tool.name}</span>
-        </a>
-      </div>
-    ))}
+    {
+      tools.map((tool) => (
+        <div class="skill-item">
+          <a href={tool.link} target="_blank">
+            <img src={tool.icon} alt={tool.name} class="skill-icon" />
+            <span class="skill-name">{tool.name}</span>
+          </a>
+        </div>
+      ))
+    }
   </div>
 </div>

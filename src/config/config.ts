@@ -60,5 +60,5 @@ export const config = {
 		`,
 		color: "#76b4f1ff",
 	},
-	title: "</ghoul>"
+	title: "</ghoul>",
 };

@@ -1,12 +1,14 @@
 ---
+import { getAnalytics } from "~/components/analytics/analyitcs";
+import Rybbit from "~/components/analytics/Rybbit.astro";
 import { Toaster } from "~/components/ui/toast";
 import { config } from "~/config/config";
 
 import "~/styles/global.css";
 import "~/styles/layout.css";
 
-const rybbitSiteId = import.meta.env.RYBBIT_SITE_ID;
 const isProd = import.meta.env.PROD;
+const hasAnalytics = isProd ? await getAnalytics() : false;
 ---
 
 <!doctype html>
@@ -19,16 +21,7 @@ const isProd = import.meta.env.PROD;
     <meta name="generator" content={Astro.generator} />
     <title>{config.title}</title>
 
-    {
-      isProd && (
-        <script
-          src={config.analytics.script}
-          data-site-id={rybbitSiteId}
-          async
-          defer
-        />
-      )
-    }
+    {hasAnalytics && <Rybbit />}
   </head>
   <body>
     <slot />
