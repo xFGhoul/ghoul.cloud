@@ -1,0 +1,64 @@
+---
+import "~/styles/toggler.css";
+---
+
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <img
+        src="/svgs/dark.svg"
+        alt="Dark mode"
+        class="theme-icon dark-icon"
+        id="dark-icon"
+    />
+    <img
+        src="/svgs/light.svg"
+        alt="Light mode"
+        class="theme-icon light-icon"
+        id="light-icon"
+    />
+</button>
+
+<script>
+    import store from "~/lib/store";
+
+    type Theme = "light" | "dark";
+
+    const themeToggle = document.getElementById("theme-toggle");
+    const darkIcon = document.getElementById("dark-icon");
+    const lightIcon = document.getElementById("light-icon");
+
+    async function getTheme(): Promise<Theme> {
+        const savedTheme = await store.getItem<Theme>("theme");
+        return savedTheme || "light";
+    }
+
+    async function setTheme(theme: Theme) {
+        await store.setItem("theme", theme);
+        applyTheme(theme);
+    }
+
+    function applyTheme(theme: Theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+
+        if (theme === "dark") {
+            darkIcon?.classList.remove("active");
+            lightIcon?.classList.add("active");
+        } else {
+            darkIcon?.classList.add("active");
+            lightIcon?.classList.remove("active");
+        }
+
+        window.dispatchEvent(
+            new CustomEvent("themeChanged", { detail: { theme } }),
+        );
+    }
+
+    async function toggleTheme() {
+        const currentTheme = await getTheme();
+        const newTheme: Theme = currentTheme === "light" ? "dark" : "light";
+        await setTheme(newTheme);
+    }
+
+    getTheme().then(applyTheme);
+
+    themeToggle?.addEventListener("click", toggleTheme);
+</script>

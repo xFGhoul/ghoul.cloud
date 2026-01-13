@@ -1,6 +1,4 @@
 ---
-import { config } from "~/config/config";
-
 import "~/styles/background.css";
 ---
 
@@ -10,7 +8,6 @@ import "~/styles/background.css";
 
 <div class="background" id="background">
   <video
-    src={config.background.video}
     autoplay
     muted
     loop
@@ -22,36 +19,101 @@ import "~/styles/background.css";
 <script>
   import { showToast } from "~/components/ui/toast";
   import { config } from "~/config/config";
-
+  import store from "~/lib/store";
   import mobile from "is-mobile";
+
+  type Theme = "light" | "dark";
 
   const isMobile = mobile();
   const spinner = document.getElementById("loading-spinner");
   const background = document.getElementById("background");
   const video = document.getElementById("background-video") as HTMLVideoElement;
 
-  if (isMobile && video) {
-    video.src = config.background.mobile;
+  let isTransitioning = false;
+
+  async function getVideoSource(theme: Theme): Promise<string> {
+    if (isMobile) {
+      return theme === "dark"
+        ? config.background.mobileDark
+        : config.background.mobile;
+    }
+    return theme === "dark"
+      ? config.background.videoDark
+      : config.background.video;
   }
 
-  setTimeout(() => {
-    if (spinner && spinner.style.display !== "none") {
-      spinner.style.display = "none";
+  async function updateVideo() {
+    if (isTransitioning) return;
 
-      if (background) {
-        background.style.opacity = "0.6";
-      }
+    const theme = (await store.getItem<Theme>("theme")) || "light";
+    const newSrc = await getVideoSource(theme);
+    const currentSrc = video.src.split("/").pop() || "";
+    const targetSrc = newSrc.split("/").pop() || "";
 
-      if (!isMobile) {
-        showToast({
-          title: "Loaded",
-          icon: "/svgs/check.svg",
-          variant: "glass",
-          duration: config.toast.duration,
-        });
-      }
+    if (video && currentSrc !== targetSrc) {
+      isTransitioning = true;
+      const currentTime = video.currentTime;
 
-      window.dispatchEvent(new CustomEvent("backgroundLoaded"));
+      video.style.opacity = "0";
+
+      setTimeout(() => {
+        video.src = newSrc;
+        video.currentTime = currentTime;
+        video.load();
+
+        video.addEventListener(
+          "canplay",
+          () => {
+            video.play().catch(console.error);
+            video.style.opacity = "1";
+            isTransitioning = false;
+          },
+          { once: true },
+        );
+      }, 500);
     }
-  }, 100);
+  }
+
+  async function initializeVideo() {
+    const theme = (await store.getItem<Theme>("theme")) || "light";
+    const initialSrc = await getVideoSource(theme);
+
+    if (video) {
+      video.src = initialSrc;
+      video.load();
+
+      video.addEventListener(
+        "canplaythrough",
+        () => {
+          video.play().catch(console.error);
+        },
+        { once: true },
+      );
+    }
+  }
+
+  window.addEventListener("themeChanged", updateVideo);
+
+  initializeVideo().then(() => {
+    setTimeout(() => {
+      if (spinner && spinner.style.display !== "none") {
+        spinner.style.display = "none";
+
+        if (background) {
+          background.classList.add("fade-in");
+        }
+
+        if (!isMobile) {
+          showToast({
+            title: "Loaded",
+            icon: "/svgs/check.svg",
+            variant: "glass",
+            duration: config.toast.duration,
+          });
+        }
+
+        window.dispatchEvent(new CustomEvent("backgroundLoaded"));
+      }
+    }, 100);
+  });
 </script>

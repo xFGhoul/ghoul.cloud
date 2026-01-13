@@ -21,8 +21,11 @@ export const config = {
 		volume: 0.2,
 	},
 	background: {
-		video: "gojo.mp4",
-		mobile: "gojo-mobile.mp4",
+		video: "/backgrounds/light/light.mp4",
+		mobile: "/backgrounds/light/light-mobile.mp4",
+		videoDark: "/backgrounds/dark/dark.mp4",
+		mobileDark: "/backgrounds/dark/dark-mobile.mp4",
+
 	},
 	contact: {
 		email: "contact@ghoul.cloud",
