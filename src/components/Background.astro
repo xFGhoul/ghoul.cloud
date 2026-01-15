@@ -7,13 +7,8 @@ import "~/styles/background.css";
 </div>
 
 <div class="background" id="background">
-  <video
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    id="background-video"></video>
+  <video autoplay muted loop playsinline preload="auto" id="background-video"
+  ></video>
 </div>
 
 <script>
@@ -31,6 +26,26 @@ import "~/styles/background.css";
 
   let isTransitioning = false;
 
+  function waitForEvent(target: EventTarget, name: string) {
+    return new Promise<void>((resolve, reject) => {
+      const onOk = () => {
+        cleanup();
+        resolve();
+      };
+      const onErr = () => {
+        cleanup();
+        reject(new Error(`Video event error while waiting for: ${name}`));
+      };
+      const cleanup = () => {
+        target.removeEventListener(name, onOk as EventListener);
+        target.removeEventListener("error", onErr as EventListener);
+      };
+
+      target.addEventListener(name, onOk as EventListener, { once: true });
+      target.addEventListener("error", onErr as EventListener, { once: true });
+    });
+  }
+
   async function getVideoSource(theme: Theme): Promise<string> {
     if (isMobile) {
       return theme === "dark"
@@ -42,78 +57,85 @@ import "~/styles/background.css";
       : config.background.video;
   }
 
+  async function setVideoSrcPreserveTime(newSrc: string) {
+    if (!video) return;
+
+    const prevTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+
+    video.pause();
+    video.src = newSrc;
+    video.load();
+
+    await waitForEvent(video, "loadedmetadata");
+    const dur = Number.isFinite(video.duration) ? video.duration : 0;
+    const clamped = dur > 0 ? Math.min(prevTime, Math.max(dur - 0.25, 0)) : 0;
+
+    try {
+      video.currentTime = clamped;
+    } catch {
+      // ignore seek failures
+    }
+
+    await waitForEvent(video, "canplay");
+    await video.play().catch(console.error);
+  }
+
   async function updateVideo() {
-    if (isTransitioning) return;
+    if (isTransitioning || !video) return;
 
     const theme = (await store.getItem<Theme>("theme")) || "light";
     const newSrc = await getVideoSource(theme);
-    const currentSrc = video.src.split("/").pop() || "";
-    const targetSrc = newSrc.split("/").pop() || "";
 
-    if (video && currentSrc !== targetSrc) {
-      isTransitioning = true;
-      const currentTime = video.currentTime;
+    const currentResolved = video.currentSrc || video.src;
+    const targetResolved = new URL(newSrc, window.location.href).toString();
+    if (currentResolved === targetResolved) return;
 
-      video.style.opacity = "0";
+    isTransitioning = true;
+    video.style.opacity = "0";
 
-      setTimeout(() => {
-        video.src = newSrc;
-        video.currentTime = currentTime;
-        video.load();
-
-        video.addEventListener(
-          "canplay",
-          () => {
-            video.play().catch(console.error);
-            video.style.opacity = "1";
-            isTransitioning = false;
-          },
-          { once: true },
-        );
-      }, 500);
-    }
+    window.setTimeout(async () => {
+      try {
+        await setVideoSrcPreserveTime(newSrc);
+      } finally {
+        video.style.opacity = "1";
+        isTransitioning = false;
+      }
+    }, 500);
   }
 
   async function initializeVideo() {
     const theme = (await store.getItem<Theme>("theme")) || "light";
     const initialSrc = await getVideoSource(theme);
 
-    if (video) {
-      video.src = initialSrc;
-      video.load();
+    if (!video) return;
 
-      video.addEventListener(
-        "canplaythrough",
-        () => {
-          video.play().catch(console.error);
-        },
-        { once: true },
-      );
-    }
+    video.src = initialSrc;
+    video.load();
+
+    await waitForEvent(video, "canplaythrough");
+    await video.play().catch(console.error);
   }
 
   window.addEventListener("themeChanged", updateVideo);
 
-  initializeVideo().then(() => {
-    setTimeout(() => {
-      if (spinner && spinner.style.display !== "none") {
-        spinner.style.display = "none";
+  initializeVideo()
+    .then(() => {
+      if (spinner) spinner.style.display = "none";
+      if (background) background.classList.add("fade-in");
 
-        if (background) {
-          background.classList.add("fade-in");
-        }
-
-        if (!isMobile) {
-          showToast({
-            title: "Loaded",
-            icon: "/svgs/check.svg",
-            variant: "glass",
-            duration: config.toast.duration,
-          });
-        }
-
-        window.dispatchEvent(new CustomEvent("backgroundLoaded"));
+      if (!isMobile) {
+        showToast({
+          title: "Loaded",
+          icon: "/svgs/check.svg",
+          variant: "glass",
+          duration: config.toast.duration,
+        });
       }
-    }, 100);
-  });
+
+      window.dispatchEvent(new CustomEvent("backgroundLoaded"));
+    })
+    .catch((err) => {
+      console.error(err);
+      if (spinner) spinner.style.display = "none";
+    });
 </script>

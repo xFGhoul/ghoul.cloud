@@ -8,6 +8,13 @@ import "~/styles/discord.css";
       <div class="avatar-wrapper">
         <img id="avatar" class="discord-avatar" src="" fetchpriority="high" />
         <img
+          id="avatar-decoration"
+          class="avatar-decoration"
+          src=""
+          fetchpriority="high"
+          style="display: none;"
+        />
+        <img
           id="status-indicator"
           class="status-indicator"
           src=""
@@ -23,7 +30,9 @@ import "~/styles/discord.css";
     <div class="activities-section">
       <div class="activities"></div>
       <div class="no-activities" id="no-activities" style="display: none;">
-        <span>💤</span>
+        <span>
+          <img src="/svgs/zzz.svg" alt=""/>
+        </span>
       </div>
     </div>
   </div>
@@ -36,6 +45,16 @@ import "~/styles/discord.css";
   import { statusIcons, getPfpUrl } from "~/data/discord";
 
   let acts: any[] = [];
+
+  const progressIntervals = new Map<string, number>();
+
+  const clearProgressInterval = (id: string) => {
+    const handle = progressIntervals.get(id);
+    if (handle) {
+      clearInterval(handle);
+      progressIntervals.delete(id);
+    }
+  };
 
   const loadImage = (img: HTMLImageElement, src: string): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -68,21 +87,94 @@ import "~/styles/discord.css";
 
   const update = (data: any) => {
     acts = data.activities;
-
     updateStatus(data.discord_status);
     draw(data);
   };
 
+  const ensureSpotifyProgressUI = (actElem: HTMLElement) => {
+    let progressWrapper = actElem.querySelector(
+      ".spotify-progress",
+    ) as HTMLElement | null;
+    if (progressWrapper) return progressWrapper;
+
+    const details = actElem.querySelector(
+      ".activity-details",
+    ) as HTMLElement | null;
+    if (!details) return null;
+
+    progressWrapper = document.createElement("div");
+    progressWrapper.classList.add("spotify-progress");
+
+    const timeStart = document.createElement("span");
+    timeStart.classList.add("time-start");
+
+    const timeEnd = document.createElement("span");
+    timeEnd.classList.add("time-end");
+
+    const progressBar = document.createElement("div");
+    progressBar.classList.add("progress-bar");
+
+    const progressFill = document.createElement("div");
+    progressFill.classList.add("progress-fill");
+
+    progressBar.appendChild(progressFill);
+
+    progressWrapper.appendChild(timeStart);
+    progressWrapper.appendChild(progressBar);
+    progressWrapper.appendChild(timeEnd);
+
+    details.appendChild(progressWrapper);
+    return progressWrapper;
+  };
+
+  const startOrRestartSpotifyProgress = (
+    actId: string,
+    actElem: HTMLElement,
+    data: any,
+  ) => {
+    clearProgressInterval(actId);
+
+    const ts = data?.spotify?.timestamps;
+    if (!ts?.start || !ts?.end) return;
+
+    const progressWrapper = ensureSpotifyProgressUI(actElem);
+    if (!progressWrapper) return;
+
+    const timeStart = actElem.querySelector(
+      ".time-start",
+    ) as HTMLElement | null;
+    const timeEnd = actElem.querySelector(".time-end") as HTMLElement | null;
+    const progressFill = actElem.querySelector(
+      ".progress-fill",
+    ) as HTMLElement | null;
+
+    const start = Number(ts.start);
+    const end = Number(ts.end);
+    const total = Math.max(end - start, 0);
+
+    const updateProgress = () => {
+      const now = Date.now();
+      const elapsed = Math.max(now - start, 0);
+      const clamped = Math.min(elapsed, total);
+
+      if (progressFill)
+        progressFill.style.width = total ? `${(clamped / total) * 100}%` : "0%";
+      if (timeStart) timeStart.innerText = formatTime(clamped);
+      if (timeEnd) timeEnd.innerText = formatTime(total);
+    };
+
+    updateProgress();
+    const handle = window.setInterval(updateProgress, 1000);
+    progressIntervals.set(actId, handle);
+  };
+
   const draw = async (data: any) => {
     const displayNameElem = document.getElementById("display");
-    if (displayNameElem) {
+    if (displayNameElem)
       displayNameElem.innerText = data.discord_user.global_name;
-    }
 
     const nameElem = document.getElementById("username");
-    if (nameElem) {
-      nameElem.innerText = data.discord_user.username;
-    }
+    if (nameElem) nameElem.innerText = data.discord_user.username;
 
     const avaElem = document.getElementById("avatar") as HTMLImageElement;
     if (avaElem) {
@@ -96,160 +188,172 @@ import "~/styles/discord.css";
       );
     }
 
-    const actsWrapper = document.querySelector(".activities");
+    const decorationElem = document.getElementById(
+      "avatar-decoration",
+    ) as HTMLImageElement;
+    if (decorationElem && data.discord_user.avatar_decoration_data) {
+      const decorationUrl = `https://cdn.discordapp.com/avatar-decoration-presets/${data.discord_user.avatar_decoration_data.asset}.png`;
+      decorationElem.style.display = "block";
+      await loadImage(decorationElem, decorationUrl);
+    } else if (decorationElem) {
+      decorationElem.style.display = "none";
+    }
+
+    const actsWrapper = document.querySelector(
+      ".activities",
+    ) as HTMLElement | null;
     const noActivities = document.getElementById("no-activities");
 
     if (!actsWrapper) return;
 
-    const toRemove: ChildNode[] = [];
-    actsWrapper.childNodes.forEach((node: ChildNode) => {
-      if (
-        node instanceof HTMLElement &&
-        acts.filter((act) => act.id == node.id).length === 0
-      ) {
-        toRemove.push(node);
+    const visibleActivities = acts.filter((act) => act.type !== 4);
+    const visibleIds = new Set(visibleActivities.map((a) => a.id));
+
+    const toRemove: HTMLElement[] = [];
+    actsWrapper.querySelectorAll(".activity").forEach((node) => {
+      const id = (node as HTMLElement).id;
+      if (id && !visibleIds.has(id)) {
+        toRemove.push(node as HTMLElement);
       }
     });
-    toRemove.forEach((node) => actsWrapper.removeChild(node));
-
-    const visibleActivities = acts.filter((act) => act.type !== 4);
+    toRemove.forEach((node) => {
+      clearProgressInterval(node.id);
+      actsWrapper.removeChild(node);
+    });
 
     if (visibleActivities.length === 0) {
       if (noActivities) noActivities.style.display = "flex";
+      for (const id of progressIntervals.keys()) clearProgressInterval(id);
       return;
     } else {
       if (noActivities) noActivities.style.display = "none";
     }
 
-    acts.forEach(async (act: any) => {
-      if (act.type === 4) return;
-
-      if (document.getElementById(act.id)) return;
-
+    for (const act of visibleActivities) {
       const isSpotify = act.id === "spotify:1" && data.spotify;
 
-      const actElem = document.createElement("div");
-      actElem.classList.add("activity");
-      actElem.id = act.id;
+      let actElem = document.getElementById(act.id) as HTMLElement | null;
 
-      const actHeader = document.createElement("div");
-      actHeader.classList.add("activity-header");
+      if (!actElem) {
+        actElem = document.createElement("div");
+        actElem.classList.add("activity");
+        actElem.id = act.id;
 
-      const actType = document.createElement("span");
-      actType.classList.add("activity-type");
-      actType.innerText = isSpotify ? "Listening to Spotify" : "Playing";
+        const actHeader = document.createElement("div");
+        actHeader.classList.add("activity-header");
 
-      actHeader.appendChild(actType);
-      actElem.appendChild(actHeader);
+        const actType = document.createElement("span");
+        actType.classList.add("activity-type");
+        actHeader.appendChild(actType);
 
-      const actContent = document.createElement("div");
-      actContent.classList.add("activity-content");
+        const actContent = document.createElement("div");
+        actContent.classList.add("activity-content");
 
-      const actImageWrapper = document.createElement("div");
-      actImageWrapper.classList.add("act-images");
+        const actImageWrapper = document.createElement("div");
+        actImageWrapper.classList.add("act-images");
 
-      const largeImageElem = document.createElement("img");
-      largeImageElem.classList.add("largeimage");
-      largeImageElem.draggable = false;
+        const largeImageElem = document.createElement("img");
+        largeImageElem.classList.add("largeimage");
+        largeImageElem.draggable = false;
+        actImageWrapper.appendChild(largeImageElem);
 
-      if (isSpotify) {
-        largeImageElem.src = data.spotify.album_art_url;
-      } else {
-        if (act.assets && act.assets.large_image) {
-          largeImageElem.src = `${config.discord.urls.assets}/${act.application_id}/${act.assets.large_image}.png`;
+        const actDetails = document.createElement("div");
+        actDetails.classList.add("activity-details");
+
+        const nameDiv = document.createElement("div");
+        nameDiv.classList.add("act-name");
+
+        const detailsDiv = document.createElement("div");
+        detailsDiv.classList.add("act-details");
+
+        const stateDiv = document.createElement("div");
+        stateDiv.classList.add("act-state");
+
+        actDetails.appendChild(nameDiv);
+        actDetails.appendChild(detailsDiv);
+        actDetails.appendChild(stateDiv);
+
+        actContent.appendChild(actImageWrapper);
+        actContent.appendChild(actDetails);
+
+        actElem.appendChild(actHeader);
+        actElem.appendChild(actContent);
+
+        actsWrapper.appendChild(actElem);
+      }
+
+      const typeSpan = actElem.querySelector(
+        ".activity-type",
+      ) as HTMLElement | null;
+      if (typeSpan)
+        typeSpan.innerText = isSpotify ? "Listening to Spotify" : "Playing";
+
+      const largeImg = actElem.querySelector(
+        ".largeimage",
+      ) as HTMLImageElement | null;
+      const smallImgExisting = actElem.querySelector(
+        ".smallimage",
+      ) as HTMLImageElement | null;
+
+      if (largeImg) {
+        if (isSpotify) {
+          largeImg.src = data.spotify.album_art_url;
         } else {
-          largeImageElem.src = `${config.discord.urls.alternative}/${act.application_id}`;
+          if (act.assets && act.assets.large_image) {
+            largeImg.src = `${config.discord.urls.assets}/${act.application_id}/${act.assets.large_image}.png`;
+          } else {
+            largeImg.src = `${config.discord.urls.alternative}/${act.application_id}`;
+          }
         }
       }
-      actImageWrapper.appendChild(largeImageElem);
 
       if ((act.assets && act.assets.small_image) || isSpotify) {
-        const smallImageElem = document.createElement("img");
-        smallImageElem.classList.add("smallimage");
-        smallImageElem.draggable = false;
-        if (isSpotify) {
-          smallImageElem.src = config.discord.urls.spotify;
-        } else {
-          smallImageElem.src = `${config.discord.urls.assets}/${act.application_id}/${act.assets.small_image}.png`;
+        if (!smallImgExisting) {
+          const small = document.createElement("img");
+          small.classList.add("smallimage");
+          small.draggable = false;
+          (
+            actElem.querySelector(".act-images") as HTMLElement | null
+          )?.appendChild(small);
         }
-        actImageWrapper.appendChild(smallImageElem);
+        const smallImg = actElem.querySelector(
+          ".smallimage",
+        ) as HTMLImageElement | null;
+        if (smallImg) {
+          smallImg.src = isSpotify
+            ? config.discord.urls.spotify
+            : `${config.discord.urls.assets}/${act.application_id}/${act.assets.small_image}.png`;
+        }
+      } else if (smallImgExisting) {
+        smallImgExisting.remove();
       }
 
-      actContent.appendChild(actImageWrapper);
-
-      const actDetails = document.createElement("div");
-      actDetails.classList.add("activity-details");
-
-      const nameSpan = document.createElement("div");
-      nameSpan.classList.add("act-name");
-      const detailsSpan = document.createElement("div");
-      detailsSpan.classList.add("act-details");
-      const stateSpan = document.createElement("div");
-      stateSpan.classList.add("act-state");
+      const nameDiv = actElem.querySelector(".act-name") as HTMLElement | null;
+      const detailsDiv = actElem.querySelector(
+        ".act-details",
+      ) as HTMLElement | null;
+      const stateDiv = actElem.querySelector(
+        ".act-state",
+      ) as HTMLElement | null;
 
       if (isSpotify) {
-        nameSpan.innerText = data.spotify.song;
-        stateSpan.innerText = data.spotify.artist;
+        if (nameDiv) nameDiv.innerText = data.spotify.song;
+        if (stateDiv) stateDiv.innerText = data.spotify.artist;
+        if (detailsDiv) detailsDiv.innerText = "";
 
-        actDetails.appendChild(nameSpan);
-        actDetails.appendChild(stateSpan);
-
-        if (data.spotify.timestamps) {
-          const progressWrapper = document.createElement("div");
-          progressWrapper.classList.add("spotify-progress");
-
-          const timeStart = document.createElement("span");
-          timeStart.classList.add("time-start");
-          const timeEnd = document.createElement("span");
-          timeEnd.classList.add("time-end");
-
-          const progressBar = document.createElement("div");
-          progressBar.classList.add("progress-bar");
-          const progressFill = document.createElement("div");
-          progressFill.classList.add("progress-fill");
-          progressBar.appendChild(progressFill);
-
-          const updateProgress = () => {
-            const now = Date.now();
-            const elapsed = now - data.spotify.timestamps.start;
-            const total =
-              data.spotify.timestamps.end - data.spotify.timestamps.start;
-            const percent = Math.min((elapsed / total) * 100, 100);
-
-            progressFill.style.width = `${percent}%`;
-            timeStart.innerText = formatTime(elapsed);
-            timeEnd.innerText = formatTime(total);
-          };
-
-          updateProgress();
-          setInterval(updateProgress, 1000);
-
-          progressWrapper.appendChild(timeStart);
-          progressWrapper.appendChild(progressBar);
-          progressWrapper.appendChild(timeEnd);
-          actDetails.appendChild(progressWrapper);
-        }
+        startOrRestartSpotifyProgress(act.id, actElem, data);
       } else {
-        nameSpan.innerText = act.name || "";
+        clearProgressInterval(act.id);
 
-        if (act.details) {
-          detailsSpan.innerHTML = `${act.details}`;
-        }
+        if (nameDiv) nameDiv.innerText = act.name || "";
+        if (detailsDiv)
+          detailsDiv.innerHTML = act.details ? `${act.details}` : "";
+        if (stateDiv) stateDiv.innerHTML = act.state ? `${act.state}` : "";
 
-        if (act.state) {
-          stateSpan.innerHTML = `${act.state}`;
-        }
-
-        actDetails.appendChild(nameSpan);
-        actDetails.appendChild(detailsSpan);
-        actDetails.appendChild(stateSpan);
+        const oldProgress = actElem.querySelector(".spotify-progress");
+        if (oldProgress) oldProgress.remove();
       }
-
-      actContent.appendChild(actDetails);
-      actElem.appendChild(actContent);
-
-      actsWrapper.appendChild(actElem);
-    });
+    }
   };
 
   window.addEventListener("load", load);

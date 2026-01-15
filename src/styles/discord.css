@@ -24,26 +24,59 @@
 }
 
 .avatar-wrapper {
-	position: relative;
-	flex-shrink: 0;
+    position: relative;
+    flex-shrink: 0;
+
+    --avatar-size: 80px;
+    --decoration-size: 90px;  
+    --status-size: 24px;      
+    --status-offset: 2px;     
+
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    overflow: visible;
 }
 
 .discord-avatar {
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-	border: 3px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.avatar-decoration {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    max-width: none;
+    max-height: none;
+
+    width: var(--decoration-size);
+    height: var(--decoration-size);
+
+    transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+
+    pointer-events: none;
+    z-index: 2;
+    display: block;
 }
 
 .status-indicator {
-	position: absolute;
-	bottom: 2px;
-	right: 2px;
-	width: 24px;
-	height: 24px;
-	border-radius: 50%;
-	background: rgba(0, 0, 0, 0.1);
-	padding: 2px;
+    position: absolute;
+    bottom: var(--status-offset);
+    right: var(--status-offset);
+
+    width: var(--status-size);
+    height: var(--status-size);
+
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: #0b0b0b;
+    padding: 2px;
+    box-shadow: 0 0 0 2px #0b0b0b;
+
+    z-index: 3;
 }
 
 .no-activities {
@@ -119,21 +152,41 @@
 	flex-shrink: 0;
 }
 
+.act-images {
+    position: relative;
+    flex-shrink: 0;
+
+    --large-size: 64px;
+    --badge-size: 24px;
+    --badge-overlap: 25%; 
+
+    width: var(--large-size);
+    height: var(--large-size);
+}
+
 .largeimage {
-	width: 64px;
-	height: 64px;
-	border-radius: 8px;
-	display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: block;
+    object-fit: cover;
 }
 
 .smallimage {
-	position: absolute;
-	bottom: 6px;
-	right: -2px;
-	width: 24px;
-	height: 24px;
-	border-radius: 50%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    width: var(--badge-size);
+    height: var(--badge-size);
+
+    border-radius: 50%;
 	border: 2px solid rgba(0, 0, 0, 0.2);
+
+    transform: translate(var(--badge-overlap), var(--badge-overlap));
+
+    object-fit: cover;
+    object-position: center;
 }
 
 .activity-details {
@@ -206,6 +259,18 @@
 		height: 60px;
 	}
 
+    .avatar-wrapper {
+        --avatar-size: 60px;
+        --decoration-size: 68px;
+        --status-size: 18px;
+        --status-offset: 0px;
+    }
+
+    .status-indicator {
+        padding: 1px;
+        box-shadow: 0 0 0 2px #0b0b0b; 
+    }
+
 	.status-indicator {
 		width: 18px;
 		height: 18px;
@@ -217,32 +282,26 @@
 		font-size: 1.25rem;
 	}
 
-	.largeimage {
-		width: 48px;
-		height: 48px;
-	}
-
-	.smallimage {
-		width: 22px;
-		height: 22px;
-		right: -5px;
-		bottom: 22px;
-	}
+    .act-images {
+        --large-size: 48px;
+        --badge-size: 22px;
+        --badge-overlap: 25%;
+    }
 }
 
-/* Hide images until they load */
 .discord-avatar,
-.status-indicator {
+.status-indicator,
+.avatar-decoration {
 	opacity: 0;
 	transition: opacity 0.3s ease-in;
 }
 
 .discord-avatar.loaded,
-.status-indicator.loaded {
+.status-indicator.loaded,
+.avatar-decoration.loaded {
 	opacity: 1;
 }
 
-/* Skeleton loader for avatar */
 .avatar-wrapper::before {
 	content: "";
 	position: absolute;
