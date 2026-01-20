@@ -1,22 +1,197 @@
 ---
 import "~/styles/glass.css";
 import "~/styles/skills.css";
+import "~/styles/modal.css";
 
 import { tools } from "~/data/tools";
 ---
 
 <div class="glass-card skills-card">
   <h3 class="card-title">Skills & Tools</h3>
+
   <div class="skills-grid">
     {
       tools.map((tool) => (
-        <div class="skill-item">
-          <a href={tool.link} target="_blank">
-            <img src={tool.icon} alt={tool.name} class="skill-icon" />
-            <span class="skill-name">{tool.name}</span>
-          </a>
-        </div>
+        <button
+          type="button"
+          class="skill-item"
+          data-tool={tool.name}
+          data-link={tool.link}
+          data-subtitle={tool.subtitle ?? ""}
+          aria-haspopup="dialog"
+          aria-controls="projects-modal"
+        >
+          <img src={tool.icon} alt={tool.name} class="skill-icon" />
+          <span class="skill-name">{tool.name}</span>
+        </button>
       ))
     }
   </div>
 </div>
+
+<div class="modal-backdrop" id="projects-modal" aria-hidden="true">
+  <div
+    class="glass-card modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="projects-modal-title"
+  >
+    <div class="modal-inner">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="projects-modal-title">
+            <span id="projects-modal-tool">—</span>
+          </h3>
+
+          <p class="modal-subtitle" id="projects-modal-subtitle"></p>
+
+          <div class="modal-actions">
+            <a
+              id="projects-modal-tool-link"
+              class="modal-tool-link"
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Visit tool
+            </a>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="modal-close"
+          id="projects-modal-close"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="projects-empty" id="projects-empty">
+          Nothing Yet.
+        </p>
+        <ul class="projects-list" id="projects-list"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { projects } from "~/data/projects";
+
+  const backdrop = document.getElementById("projects-modal");
+  const closeBtn = document.getElementById("projects-modal-close");
+  const toolNameEl = document.getElementById("projects-modal-tool");
+  const subtitleEl = document.getElementById("projects-modal-subtitle");
+  const toolLinkEl = document.getElementById(
+    "projects-modal-tool-link",
+  ) as HTMLAnchorElement | null;
+  const listEl = document.getElementById("projects-list");
+  const emptyEl = document.getElementById("projects-empty");
+
+  let lastFocused: Element | null = null;
+
+  function openModal(toolName: string, toolLink: string, subtitle: string) {
+    if (!backdrop || !toolNameEl || !listEl || !emptyEl) return;
+
+    lastFocused = document.activeElement;
+
+    toolNameEl.textContent = toolName;
+
+    if (subtitleEl)
+      subtitleEl.textContent = subtitle || `Projects using ${toolName}.`;
+
+    if (toolLinkEl && toolLink) {
+      toolLinkEl.href = toolLink;
+      toolLinkEl.textContent = `Learn ${toolName}`;
+      toolLinkEl.style.display = "";
+    } else if (toolLinkEl) {
+      toolLinkEl.style.display = "none";
+    }
+
+    const filtered = projects.filter((p) => p.tools.includes(toolName));
+
+    listEl.innerHTML = "";
+    if (filtered.length === 0) {
+      emptyEl.classList.add("visible");
+    } else {
+      emptyEl.classList.remove("visible");
+      for (const p of filtered) {
+        const li = document.createElement("li");
+        li.className = "project-item";
+
+        const a = document.createElement("a");
+        a.href = p.repoUrl;
+        a.target = "_blank";
+        a.rel = "noreferrer";
+
+        const header = document.createElement("div");
+        header.className = "project-link-header";
+
+        const gh = document.createElement("img");
+        gh.src = "/icons/github.svg";
+        gh.alt = "";
+        gh.setAttribute("aria-hidden", "true");
+        gh.className = "project-gh-icon";
+
+        const name = document.createElement("p");
+        name.className = "project-name";
+        name.textContent = p.name;
+
+        header.appendChild(gh);
+        header.appendChild(name);
+
+        if (p.contributor) {
+          const pill = document.createElement("span");
+          pill.className = "project-pill project-pill-contributor";
+          pill.textContent = "Contributor";
+          header.appendChild(pill);
+        }
+
+        const desc = document.createElement("p");
+        desc.className = "project-desc";
+        desc.textContent = p.description ?? "";
+
+        a.appendChild(header);
+        if (p.description) a.appendChild(desc);
+
+        li.appendChild(a);
+        listEl.appendChild(li);
+      }
+    }
+
+    backdrop.classList.add("open");
+    backdrop.setAttribute("aria-hidden", "false");
+    closeBtn?.focus();
+  }
+
+  function closeModal() {
+    if (!backdrop) return;
+    backdrop.classList.remove("open");
+    backdrop.setAttribute("aria-hidden", "true");
+
+    if (lastFocused instanceof HTMLElement) lastFocused.focus();
+  }
+
+  document.querySelectorAll(".skill-item[data-tool]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const el = btn as HTMLElement;
+      const toolName = el.dataset.tool || "";
+      const toolLink = el.dataset.link || "";
+      const subtitle = el.dataset.subtitle || "";
+      if (toolName) openModal(toolName, toolLink, subtitle);
+    });
+  });
+
+  closeBtn?.addEventListener("click", closeModal);
+
+  backdrop?.addEventListener("click", (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+</script>

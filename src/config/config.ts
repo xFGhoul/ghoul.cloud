@@ -7,7 +7,7 @@ export const config = {
 	},
 	analytics: {
 		script: "https://analytics.ghoul.cloud/api/script.js",
-		id: "c828a6fa1606"
+		id: "c828a6fa1606",
 	},
 	toast: {
 		duration: 700,
@@ -25,7 +25,6 @@ export const config = {
 		mobile: "/backgrounds/light/light-mobile.mp4",
 		videoDark: "/backgrounds/dark/dark.mp4",
 		mobileDark: "/backgrounds/dark/dark-mobile.mp4",
-
 	},
 	contact: {
 		email: "contact@ghoul.cloud",

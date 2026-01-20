@@ -1,0 +1,215 @@
+.modal-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+
+	display: none;
+	align-items: center;
+	justify-content: center;
+
+	padding: 24px;
+
+	background: rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(6px);
+}
+
+.modal-backdrop.open {
+	display: flex;
+}
+
+.modal {
+	width: min(680px, 100%);
+	max-height: min(75vh, 720px);
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: column;
+
+	transform: none !important;
+}
+
+.modal.glass-card:hover {
+	transform: none;
+	box-shadow: none;
+	background: rgba(0, 0, 0, 0.4);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-inner {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	flex: 1;
+	min-height: 0;
+}
+
+.modal-header {
+	display: flex;
+	align-items: start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.modal-title {
+	margin: 0;
+	color: white;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.modal-subtitle {
+	margin: 6px 0 0;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 13px;
+}
+
+.modal-close {
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	background: rgba(255, 255, 255, 0.06);
+	color: white;
+
+	width: 36px;
+	height: 36px;
+	border-radius: 10px;
+
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+	background: rgba(255, 255, 255, 0.12);
+	border-color: rgba(255, 255, 255, 0.28);
+	transform: translateY(-1px);
+}
+
+.modal-body {
+	flex: 1;
+	min-height: 0;
+
+	overflow: auto;
+	padding-right: 2px;
+
+	overscroll-behavior: contain;
+}
+
+.projects-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.project-item a {
+	display: block;
+	text-decoration: none;
+
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 12px;
+	padding: 12px;
+
+	transition: all 0.2s ease;
+}
+
+.project-item a:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.24);
+	transform: translateY(-2px);
+}
+
+.project-name {
+	color: white;
+	font-weight: 600;
+	font-size: 14px;
+	margin: 0 0 4px 0;
+}
+
+.project-desc {
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 13px;
+	margin: 0;
+}
+
+.projects-empty {
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 13px;
+	margin: 0;
+	display: none;
+}
+
+.projects-empty.visible {
+	display: block;
+}
+
+.modal-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 10px;
+	flex-wrap: wrap;
+}
+
+.modal-tool-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 6px 10px;
+	border-radius: 10px;
+
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+
+	color: white;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 600;
+
+	transition: all 0.2s ease;
+}
+
+.modal-tool-link:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.24);
+	transform: translateY(-1px);
+}
+
+.project-link-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.project-gh-icon {
+	width: 16px;
+	height: 16px;
+	opacity: 0.9;
+	flex: 0 0 auto;
+}
+
+.project-pill {
+	margin-left: auto;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 4px 8px;
+	border-radius: 999px;
+
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.2px;
+
+	color: rgba(255, 255, 255, 0.92);
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.project-pill-contributor {
+	background: rgba(59, 130, 246, 0.18);
+	border-color: rgba(59, 130, 246, 0.28);
+}

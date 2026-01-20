@@ -60,7 +60,7 @@ const Toaster = <T extends ValidComponent = "ol">(
 
 type ToastRootProps<T extends ValidComponent = "li"> =
 	ToastPrimitive.ToastRootProps<T> &
-	VariantProps<typeof toastVariants> & { class?: string | undefined };
+		VariantProps<typeof toastVariants> & { class?: string | undefined };
 
 const Toast = <T extends ValidComponent = "li">(
 	props: PolymorphicProps<T, ToastRootProps<T>>,
