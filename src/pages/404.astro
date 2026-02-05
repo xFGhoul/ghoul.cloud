@@ -1,0 +1,29 @@
+---
+import Audio from "~/components/Audio.astro";
+import Background from "~/components/Background.astro";
+import Theme from "~/components/Theme.astro";
+import Layout from "~/layouts/Layout.astro";
+
+import "~/styles/glass.css";
+import "~/styles/404.css";
+---
+
+<Layout>
+    <Theme />
+    <main class="notfound-container">
+        <section class="glass-card notfound-card" aria-label="Not found">
+            <p class="notfound-code">404</p>
+            <h1 class="notfound-title">Page not found</h1>
+            <p class="notfound-subtitle">
+                The page you're looking for doesn't exist or was moved.
+            </p>
+
+            <div class="notfound-actions">
+                <a class="notfound-btn primary" href="/">Go Home</a>
+            </div>
+        </section>
+    </main>
+
+    <Background />
+    <Audio />
+</Layout>

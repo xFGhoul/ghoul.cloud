@@ -1,0 +1,79 @@
+.notfound-container {
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	padding: 40px 20px;
+	position: relative;
+	z-index: 1;
+}
+
+.notfound-card {
+	width: min(520px, 100%);
+	text-align: center;
+	padding: 22px;
+}
+
+.notfound-code {
+	margin: 0;
+	font-size: 44px;
+	font-weight: 800;
+	letter-spacing: -0.8px;
+	color: rgba(255, 255, 255, 0.95);
+}
+
+.notfound-title {
+	margin: 6px 0 0;
+	font-size: 18px;
+	font-weight: 700;
+	color: white;
+}
+
+.notfound-subtitle {
+	margin: 10px 0 0;
+	font-size: 13px;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.75);
+}
+
+.notfound-actions {
+	margin-top: 16px;
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.notfound-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	padding: 9px 12px;
+	border-radius: 12px;
+
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+
+	color: white;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 700;
+
+	transition: all 0.2s ease;
+}
+
+.notfound-btn:hover {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.24);
+	transform: translateY(-1px);
+}
+
+.notfound-btn.primary {
+	background: rgba(59, 130, 246, 0.18);
+	border-color: rgba(59, 130, 246, 0.28);
+}
+
+.notfound-btn.primary:hover {
+	background: rgba(59, 130, 246, 0.26);
+	border-color: rgba(59, 130, 246, 0.38);
+}
