@@ -1,0 +1,178 @@
+---
+import "~/styles/glass.css";
+import "~/styles/modal.css";
+import "~/styles/me.css";
+
+import { movies } from "~/data/movies";
+import { tvShows } from "~/data/shows";
+---
+
+<div class="me-container">
+    <div class="me-card">
+        <h1 class="me-title">About Me</h1>
+
+        <div class="me-rows">
+            <section class="me-row" aria-label="Favourite movies">
+                <div class="me-row-header">
+                    <h2 class="me-row-title">Movies</h2>
+                </div>
+
+                <div class="me-row-scroller">
+                    {
+                        movies.map((m) => (
+                            <button
+                                type="button"
+                                class="me-item"
+                                aria-haspopup="dialog"
+                                aria-controls="me-modal"
+                                aria-label={m.title}
+                                data-title={m.title}
+                                data-description={m.description}
+                                data-cover={m.cover}
+                            >
+                                <img
+                                    class="me-cover"
+                                    src={m.cover}
+                                    alt={`${m.title} cover`}
+                                />
+                            </button>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="me-row" aria-label="Favourite TV shows">
+                <div class="me-row-header">
+                    <h2 class="me-row-title">TV Shows</h2>
+                </div>
+
+                <div class="me-row-scroller">
+                    {
+                        tvShows.map((t) => (
+                            <button
+                                type="button"
+                                class="me-item"
+                                aria-haspopup="dialog"
+                                aria-controls="me-modal"
+                                aria-label={t.title}
+                                data-title={t.title}
+                                data-description={t.description}
+                                data-cover={t.cover}
+                            >
+                                <img
+                                    class="me-cover"
+                                    src={t.cover}
+                                    alt={`${t.title} cover`}
+                                />
+                            </button>
+                        ))
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="me-modal" aria-hidden="true">
+    <div
+        class="glass-card modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="me-modal-title"
+    >
+        <div class="modal-inner">
+            <div class="me-modal-layout">
+                <div class="me-modal-left">
+                    <h3 class="me-modal-title" id="me-modal-title">—</h3>
+                    <p class="me-modal-desc" id="me-modal-desc"></p>
+                </div>
+
+                <div class="me-modal-right">
+                    <button
+                        type="button"
+                        class="modal-close me-modal-close"
+                        id="me-modal-close"
+                        aria-label="Close"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                            width="20"
+                            height="20"
+                        >
+                            <path d="M18 6l-12 12"></path>
+                            <path d="M6 6l12 12"></path>
+                        </svg>
+                    </button>
+
+                    <img id="me-modal-cover" class="me-modal-cover" alt="" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const backdrop = document.getElementById("me-modal");
+    const closeBtn = document.getElementById("me-modal-close");
+    const titleEl = document.getElementById("me-modal-title");
+    const descEl = document.getElementById("me-modal-desc");
+    const coverEl = document.getElementById(
+        "me-modal-cover",
+    ) as HTMLImageElement | null;
+
+    let lastFocused: Element | null = null;
+
+    function openModal(title: string, description: string, cover: string) {
+        if (!backdrop || !titleEl || !descEl || !coverEl) return;
+
+        lastFocused = document.activeElement;
+
+        titleEl.textContent = title || "—";
+        descEl.textContent = description || "";
+
+        coverEl.src = cover;
+        coverEl.alt = title ? `${title} cover` : "Cover";
+
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+        closeBtn?.focus();
+    }
+
+    function closeModal() {
+        if (!backdrop) return;
+
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+
+        if (lastFocused instanceof HTMLElement) lastFocused.focus();
+    }
+
+    document
+        .querySelectorAll(".me-item[data-title][data-cover]")
+        .forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const el = btn as HTMLElement;
+                const title = el.dataset.title || "";
+                const description = el.dataset.description || "";
+                const cover = el.dataset.cover || "";
+                if (cover) openModal(title, description, cover);
+            });
+        });
+
+    closeBtn?.addEventListener("click", closeModal);
+
+    backdrop?.addEventListener("click", (e) => {
+        if (e.target === backdrop) closeModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+    });
+</script>

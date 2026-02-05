@@ -29,4 +29,4 @@ export const getPfpUrl = (
 
 export const getBanner = () => {
 	return `https://dcdn.dstn.to/banners/${config.discord.id}`;
-}
+};
