@@ -12,7 +12,7 @@ export const movies: Movie[] = [
 	},
 	{
 		title: "Arrival",
-		cover: "movies/arrival.webp",
+		cover: "/movies/arrival.webp",
 		description: "Awesome Sci-Fi Movie with a Great Story.",
 	}
 ];
