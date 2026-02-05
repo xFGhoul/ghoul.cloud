@@ -1,0 +1,55 @@
+---
+import "~/styles/glass.css";
+import "~/styles/time.css";
+
+import { config } from "~/config/config";
+---
+
+<div class="glass-card time-card" aria-label="Time">
+    <div class="time-top">
+        <div class="time-heading">
+            <span class="time-icon" aria-hidden="true">
+                <img src="/svgs/clock.svg" alt="" width="16" height="16" />
+            </span>
+            <div class="time-label">{config.time?.label ?? "Time"}</div>
+        </div>
+    </div>
+
+    <div class="time-main">
+        <div class="time-value" id="time-value">--:--</div>
+        <div class="time-date" id="time-date">--</div>
+    </div>
+</div>
+
+<script>
+    import { config } from "~/config/config";
+
+    const valueEl = document.getElementById("time-value");
+    const dateEl = document.getElementById("time-date");
+
+    function render() {
+        const now = new Date();
+        const timeZone = config.time?.timeZone ?? "America/St_Lucia";
+
+        const time = new Intl.DateTimeFormat(undefined, {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZone,
+        }).format(now);
+
+        const date = new Intl.DateTimeFormat(undefined, {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            timeZone,
+        }).format(now);
+
+        if (valueEl) valueEl.textContent = time;
+        if (dateEl) dateEl.textContent = date;
+    }
+
+    render();
+    window.setInterval(render, 1000);
+</script>

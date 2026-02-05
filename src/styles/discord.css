@@ -125,7 +125,7 @@
 }
 
 .activity {
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(0, 0, 0, 0.05);
 	border-radius: 8px;
 	padding: 1rem;
 }
@@ -247,6 +247,7 @@
 .time-end {
 	min-width: 35px;
 	font-variant-numeric: tabular-nums;
+	color: white;
 }
 
 @media (max-width: 768px) {

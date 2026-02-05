@@ -1,0 +1,65 @@
+.time-card {
+	width: 100%;
+	max-width: 320px;
+	padding: 14px 14px;
+}
+
+.time-top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	margin-bottom: 10px;
+}
+
+.time-heading {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.time-icon {
+	display: inline-grid;
+	place-items: center;
+	width: 16px;
+	height: 16px;
+	opacity: 0.9;
+}
+
+.time-icon img {
+	width: 16px;
+	height: 16px;
+	display: block;
+}
+
+.time-label {
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 600;
+	font-size: 13px;
+	letter-spacing: 0.2px;
+}
+
+.time-main {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.time-value {
+	color: white;
+	font-weight: 800;
+	font-size: 28px;
+	line-height: 1.1;
+	letter-spacing: -0.4px;
+}
+
+.time-date {
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+@media (max-width: 768px) {
+	.time-card {
+		max-width: 100%;
+	}
+}

@@ -34,6 +34,10 @@ export const config = {
 		latitude: 14.0583,
 		longitude: -60.9875,
 	},
+	time: {
+		label: "Local Time",
+		timeZone: "America/St_Lucia",
+	},
 	discord: {
 		id: "433026067050266634",
 		urls: {
