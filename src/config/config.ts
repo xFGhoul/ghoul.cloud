@@ -29,6 +29,11 @@ export const config = {
 	contact: {
 		email: "contact@ghoul.cloud",
 	},
+	weather: {
+		name: "Gros-Islet, Saint Lucia",
+		latitude: 14.0583,
+		longitude: -60.9875,
+	},
 	discord: {
 		id: "433026067050266634",
 		urls: {

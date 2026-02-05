@@ -3,18 +3,43 @@ import "~/styles/glass.css";
 import "~/styles/modal.css";
 import "~/styles/me.css";
 
+import { animes } from "~/data/anime";
+import { books } from "~/data/books";
+import { games } from "~/data/games";
+import { mangas } from "~/data/mangas";
 import { movies } from "~/data/movies";
 import { tvShows } from "~/data/shows";
 ---
 
 <div class="me-container">
     <div class="me-card">
+        <a class="me-back" href="/" aria-label="Go back to home">
+            <span class="me-back-icon" aria-hidden="true">
+                <img
+                    src="/svgs/chevron-left.svg"
+                    alt=""
+                    width="16"
+                    height="16"
+                />
+            </span>
+            <span class="me-back-text">Back</span>
+        </a>
         <h1 class="me-title">About Me</h1>
 
         <div class="me-rows">
             <section class="me-row" aria-label="Favourite movies">
                 <div class="me-row-header">
-                    <h2 class="me-row-title">Movies</h2>
+                    <h2 class="me-row-title">
+                        <span class="me-row-title-icon" aria-hidden="true">
+                            <img
+                                src="/svgs/movies.svg"
+                                alt=""
+                                width="18"
+                                height="18"
+                            />
+                        </span>
+                        Movies
+                    </h2>
                 </div>
 
                 <div class="me-row-scroller">
@@ -27,14 +52,19 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={m.title}
                                 data-title={m.title}
-                                data-description={m.description}
+                                data-description={(m as any).description ?? ""}
                                 data-cover={m.cover}
+                                data-link={(m as any).link ?? ""}
+                                data-status={(m as any).status ?? ""}
                             >
                                 <img
                                     class="me-cover"
                                     src={m.cover}
                                     alt={`${m.title} cover`}
                                 />
+                                <span class="me-item-title" aria-hidden="true">
+                                    {m.title}
+                                </span>
                             </button>
                         ))
                     }
@@ -43,7 +73,17 @@ import { tvShows } from "~/data/shows";
 
             <section class="me-row" aria-label="Favourite TV shows">
                 <div class="me-row-header">
-                    <h2 class="me-row-title">TV Shows</h2>
+                    <h2 class="me-row-title">
+                        <span class="me-row-title-icon" aria-hidden="true">
+                            <img
+                                src="/svgs/tv.svg"
+                                alt=""
+                                width="18"
+                                height="18"
+                            />
+                        </span>
+                        TV Shows
+                    </h2>
                 </div>
 
                 <div class="me-row-scroller">
@@ -56,14 +96,195 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={t.title}
                                 data-title={t.title}
-                                data-description={t.description}
+                                data-description={(t as any).description ?? ""}
                                 data-cover={t.cover}
+                                data-link={(t as any).link ?? ""}
+                                data-status={(t as any).status ?? ""}
                             >
                                 <img
                                     class="me-cover"
                                     src={t.cover}
                                     alt={`${t.title} cover`}
                                 />
+                                <span class="me-item-title" aria-hidden="true">
+                                    {t.title}
+                                </span>
+                            </button>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="me-row" aria-label="Favourite Books">
+                <div class="me-row-header">
+                    <h2 class="me-row-title">
+                        <span class="me-row-title-icon" aria-hidden="true">
+                            <img
+                                src="/svgs/books.svg"
+                                alt=""
+                                width="18"
+                                height="18"
+                            />
+                        </span>
+                        Books
+                    </h2>
+                </div>
+
+                <div class="me-row-scroller">
+                    {
+                        books.map((b) => (
+                            <button
+                                type="button"
+                                class="me-item"
+                                aria-haspopup="dialog"
+                                aria-controls="me-modal"
+                                aria-label={b.title}
+                                data-title={b.title}
+                                data-description={(b as any).description ?? ""}
+                                data-cover={b.cover}
+                                data-link={(b as any).link ?? ""}
+                                data-status={(b as any).status ?? ""}
+                            >
+                                <img
+                                    class="me-cover"
+                                    src={b.cover}
+                                    alt={`${b.title} cover`}
+                                />
+                                <span class="me-item-title" aria-hidden="true">
+                                    {b.title}
+                                </span>
+                            </button>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="me-row" aria-label="Favourite Anime">
+                <div class="me-row-header">
+                    <h2 class="me-row-title">
+                        <span class="me-row-title-icon" aria-hidden="true">
+                            <img
+                                src="/svgs/anime.svg"
+                                alt=""
+                                width="18"
+                                height="18"
+                            />
+                        </span>
+                        Anime
+                    </h2>
+                </div>
+
+                <div class="me-row-scroller">
+                    {
+                        animes.map((a) => (
+                            <button
+                                type="button"
+                                class="me-item"
+                                aria-haspopup="dialog"
+                                aria-controls="me-modal"
+                                aria-label={a.title}
+                                data-title={a.title}
+                                data-description={(a as any).description ?? ""}
+                                data-cover={a.cover}
+                                data-link={(a as any).link ?? ""}
+                                data-status={(a as any).status ?? ""}
+                            >
+                                <img
+                                    class="me-cover"
+                                    src={a.cover}
+                                    alt={`${a.title} cover`}
+                                />
+                                <span class="me-item-title" aria-hidden="true">
+                                    {a.title}
+                                </span>
+                            </button>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="me-row" aria-label="Favourite Manga">
+                <div class="me-row-header">
+                    <h2 class="me-row-title">
+                        <span class="me-row-title-icon" aria-hidden="true">
+                            <img
+                                src="/svgs/manga.svg"
+                                alt=""
+                                width="18"
+                                height="18"
+                            />
+                        </span>
+                        Manga
+                    </h2>
+                </div>
+
+                <div class="me-row-scroller">
+                    {
+                        mangas.map((m) => (
+                            <button
+                                type="button"
+                                class="me-item"
+                                aria-haspopup="dialog"
+                                aria-controls="me-modal"
+                                aria-label={m.title}
+                                data-title={m.title}
+                                data-description={(m as any).description ?? ""}
+                                data-cover={m.cover}
+                                data-link={(m as any).link ?? ""}
+                                data-status={(m as any).status ?? ""}
+                            >
+                                <img
+                                    class="me-cover"
+                                    src={m.cover}
+                                    alt={`${m.title} cover`}
+                                />
+                                <span class="me-item-title" aria-hidden="true">
+                                    {m.title}
+                                </span>
+                            </button>
+                        ))
+                    }
+                </div>
+            </section>
+
+            <section class="me-row" aria-label="Favourite Games">
+                <div class="me-row-header">
+                    <h2 class="me-row-title">
+                        <span class="me-row-title-icon" aria-hidden="true">
+                            <img
+                                src="/svgs/games.svg"
+                                alt=""
+                                width="18"
+                                height="18"
+                            />
+                        </span>
+                        Games
+                    </h2>
+                </div>
+
+                <div class="me-row-scroller">
+                    {
+                        games.map((g) => (
+                            <button
+                                type="button"
+                                class="me-item"
+                                aria-haspopup="dialog"
+                                aria-controls="me-modal"
+                                aria-label={g.title}
+                                data-title={g.title}
+                                data-description={(g as any).description ?? ""}
+                                data-cover={g.cover}
+                                data-link={(g as any).link ?? ""}
+                                data-status={(g as any).status ?? ""}
+                            >
+                                <img
+                                    class="me-cover"
+                                    src={g.cover}
+                                    alt={`${g.title} cover`}
+                                />
+                                <span class="me-item-title" aria-hidden="true">
+                                    {g.title}
+                                </span>
                             </button>
                         ))
                     }
@@ -83,8 +304,18 @@ import { tvShows } from "~/data/shows";
         <div class="modal-inner">
             <div class="me-modal-layout">
                 <div class="me-modal-left">
-                    <h3 class="me-modal-title" id="me-modal-title">—</h3>
-                    <p class="me-modal-desc" id="me-modal-desc"></p>
+                    <div class="me-modal-top">
+                        <h3 class="me-modal-title" id="me-modal-title">—</h3>
+
+                        <div class="me-modal-pills" aria-label="Meta">
+                            <span
+                                id="me-modal-status"
+                                class="me-pill me-pill-status"
+                                style="display:none;"></span>
+                        </div>
+
+                        <p class="me-modal-desc" id="me-modal-desc"></p>
+                    </div>
                 </div>
 
                 <div class="me-modal-right">
@@ -111,7 +342,22 @@ import { tvShows } from "~/data/shows";
                         </svg>
                     </button>
 
-                    <img id="me-modal-cover" class="me-modal-cover" alt="" />
+                    <a
+                        id="me-modal-cover-link"
+                        class="me-modal-cover-link"
+                        href="#"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <img
+                            id="me-modal-cover"
+                            class="me-modal-cover"
+                            alt=""
+                        />
+                        <span class="me-modal-cover-hint" aria-hidden="true"
+                            >Open</span
+                        >
+                    </a>
                 </div>
             </div>
         </div>
@@ -119,6 +365,8 @@ import { tvShows } from "~/data/shows";
 </div>
 
 <script>
+    import { Status } from "~/lib/utils";
+
     const backdrop = document.getElementById("me-modal");
     const closeBtn = document.getElementById("me-modal-close");
     const titleEl = document.getElementById("me-modal-title");
@@ -127,9 +375,63 @@ import { tvShows } from "~/data/shows";
         "me-modal-cover",
     ) as HTMLImageElement | null;
 
+    const statusEl = document.getElementById(
+        "me-modal-status",
+    ) as HTMLSpanElement | null;
+
+    const openLinkEl = document.getElementById(
+        "me-modal-open",
+    ) as HTMLAnchorElement | null;
+    const coverLinkEl = document.getElementById(
+        "me-modal-cover-link",
+    ) as HTMLAnchorElement | null;
+
     let lastFocused: Element | null = null;
 
-    function openModal(title: string, description: string, cover: string) {
+    function normalizeStatus(status: string): string {
+        const known = new Set<string>(Object.values(Status));
+        return known.has(status) ? status : status;
+    }
+
+    function setLink(href: string) {
+        const has = Boolean(href);
+
+        if (openLinkEl) {
+            openLinkEl.style.display = has ? "" : "none";
+            openLinkEl.href = has ? href : "#";
+        }
+
+        if (coverLinkEl) {
+            coverLinkEl.href = has ? href : "#";
+            coverLinkEl.classList.toggle("disabled", !has);
+            coverLinkEl.setAttribute("aria-disabled", (!has).toString());
+        }
+    }
+
+    function setStatusPill(status: string) {
+        if (!statusEl) return;
+
+        const s = (status || "").trim();
+        if (!s) {
+            statusEl.style.display = "none";
+            statusEl.textContent = "";
+            statusEl.removeAttribute("data-status");
+            return;
+        }
+
+        const normalized = normalizeStatus(s);
+        statusEl.style.display = "";
+        statusEl.textContent = normalized;
+        statusEl.setAttribute("data-status", normalized);
+    }
+
+    function openModal(
+        title: string,
+        description: string,
+        cover: string,
+        status: string,
+        link: string,
+    ) {
         if (!backdrop || !titleEl || !descEl || !coverEl) return;
 
         lastFocused = document.activeElement;
@@ -139,6 +441,9 @@ import { tvShows } from "~/data/shows";
 
         coverEl.src = cover;
         coverEl.alt = title ? `${title} cover` : "Cover";
+
+        setStatusPill(status);
+        setLink(link);
 
         backdrop.classList.add("open");
         backdrop.setAttribute("aria-hidden", "false");
@@ -157,12 +462,16 @@ import { tvShows } from "~/data/shows";
     document
         .querySelectorAll(".me-item[data-title][data-cover]")
         .forEach((btn) => {
-            btn.addEventListener("click", () => {
+            btn.addEventListener("click", (e) => {
                 const el = btn as HTMLElement;
+
                 const title = el.dataset.title || "";
                 const description = el.dataset.description || "";
                 const cover = el.dataset.cover || "";
-                if (cover) openModal(title, description, cover);
+                const status = el.dataset.status || "";
+                const link = el.dataset.link || "";
+
+                if (cover) openModal(title, description, cover, status, link);
             });
         });
 

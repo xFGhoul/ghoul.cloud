@@ -54,7 +54,7 @@
 
 @media (max-width: 768px) {
 	.portfolio-container {
-		padding: 20px 16px;
+		padding: 64px 16px 20px;
 	}
 
 	.portfolio-grid {
@@ -77,7 +77,7 @@
 
 @media (max-width: 480px) {
 	.portfolio-container {
-		padding: 16px 12px;
+		padding: 62px 12px 16px;
 	}
 
 	.portfolio-grid {

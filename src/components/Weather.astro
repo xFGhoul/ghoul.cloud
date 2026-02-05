@@ -1,0 +1,167 @@
+---
+import "~/styles/glass.css";
+import "~/styles/weather.css";
+
+import { config } from "~/config/config";
+---
+
+<div class="glass-card weather-card" aria-label="Weather">
+    <div class="weather-top">
+        <div class="weather-location">
+            <span class="weather-pin" aria-hidden="true">
+                <img src="/svgs/map-pin.svg" alt="" />
+            </span>
+            <span id="weather-location"
+                >{config.weather?.name ?? "Weather"}</span
+            >
+        </div>
+    </div>
+
+    <div class="weather-main">
+        <div class="weather-left">
+            <div class="weather-temp">
+                <span id="weather-temp">--</span><span class="weather-unit"
+                    >°C</span
+                >
+            </div>
+            <div class="weather-desc" id="weather-desc">Loading…</div>
+        </div>
+
+        <div class="weather-right" aria-hidden="true">
+            <div class="weather-icon" id="weather-icon"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    import { config } from "~/config/config";
+
+    type WeatherResult = {
+        tempC: number;
+        code: number;
+        desc: string;
+        icon: string; // svg
+    };
+
+    const $ = (id: string) => document.getElementById(id);
+
+    const weatherCodeToDesc = (code: number): string => {
+        // Open-Meteo weather codes
+        if (code === 0) return "Clear sky";
+        if (code === 1) return "Mainly clear";
+        if (code === 2) return "Partly cloudy";
+        if (code === 3) return "Overcast";
+        if (code === 45 || code === 48) return "Fog";
+        if (code === 51 || code === 53 || code === 55) return "Drizzle";
+        if (code === 56 || code === 57) return "Freezing drizzle";
+        if (code === 61 || code === 63 || code === 65) return "Rain";
+        if (code === 66 || code === 67) return "Freezing rain";
+        if (code === 71 || code === 73 || code === 75) return "Snow";
+        if (code === 77) return "Snow grains";
+        if (code === 80 || code === 81 || code === 82) return "Rain showers";
+        if (code === 85 || code === 86) return "Snow showers";
+        if (code === 95) return "Thunderstorm";
+        if (code === 96 || code === 99) return "Thunderstorm w/ hail";
+        return "Unknown";
+    };
+
+    const iconSvg = (
+        kind: "sun" | "cloud" | "rain" | "snow" | "storm" | "fog",
+    ) => {
+        switch (kind) {
+            case "sun":
+                return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2"></path><path d="M12 20v2"></path>
+            <path d="M2 12h2"></path><path d="M20 12h2"></path>
+            <path d="M4.2 4.2l1.4 1.4"></path><path d="M18.4 18.4l1.4 1.4"></path>
+            <path d="M19.8 4.2l-1.4 1.4"></path><path d="M5.6 18.4l-1.4 1.4"></path>
+          </svg>`;
+            case "cloud":
+                return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 18h10a4 4 0 0 0 0-8a5.5 5.5 0 0 0-10.6 1.9A3.5 3.5 0 0 0 7 18z"></path>
+          </svg>`;
+            case "rain":
+                return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 15h10a4 4 0 0 0 0-8a5.5 5.5 0 0 0-10.6 1.9A3.5 3.5 0 0 0 7 15z"></path>
+            <path d="M8 19l1-2"></path><path d="M12 20l1-2"></path><path d="M16 19l1-2"></path>
+          </svg>`;
+            case "snow":
+                return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 14h10a4 4 0 0 0 0-8a5.5 5.5 0 0 0-10.6 1.9A3.5 3.5 0 0 0 7 14z"></path>
+            <path d="M9 18h.01"></path><path d="M12 19h.01"></path><path d="M15 18h.01"></path>
+          </svg>`;
+            case "storm":
+                return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 15h9a4 4 0 0 0 0-8a5.5 5.5 0 0 0-10.6 1.9A3.5 3.5 0 0 0 7 15z"></path>
+            <path d="M13 13l-3 6h3l-1 4l4-7h-3l1-3z"></path>
+          </svg>`;
+            case "fog":
+                return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 13h14"></path><path d="M3 17h18"></path><path d="M7 9h10"></path>
+          </svg>`;
+        }
+    };
+
+    const codeToIconKind = (code: number) => {
+        if (code === 0 || code === 1) return "sun";
+        if (code === 2 || code === 3) return "cloud";
+        if (code === 45 || code === 48) return "fog";
+        if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82))
+            return "rain";
+        if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86))
+            return "snow";
+        if (code >= 95) return "storm";
+        return "cloud";
+    };
+
+    async function fetchWeather(): Promise<WeatherResult> {
+        const lat = config.weather?.latitude;
+        const lon = config.weather?.longitude;
+
+        if (typeof lat !== "number" || typeof lon !== "number") {
+            throw new Error("Missing config.weather latitude/longitude");
+        }
+
+        const url =
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+            `&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Weather fetch failed: ${res.status}`);
+
+        const body = await res.json();
+        const tempC = Number(body?.current?.temperature_2m);
+        const code = Number(body?.current?.weather_code);
+
+        const desc = weatherCodeToDesc(code);
+        const kind = codeToIconKind(code);
+        const icon = iconSvg(kind);
+
+        return { tempC, code, desc, icon };
+    }
+
+    async function render() {
+        const tempEl = $("weather-temp");
+        const descEl = $("weather-desc");
+        const iconEl = $("weather-icon");
+
+        try {
+            const w = await fetchWeather();
+            if (tempEl) tempEl.textContent = `${Math.round(w.tempC)}`;
+            if (descEl) descEl.textContent = w.desc;
+            if (iconEl) iconEl.innerHTML = w.icon;
+        } catch {
+            if (descEl) descEl.textContent = "Unavailable";
+        }
+    }
+
+    render();
+    window.setInterval(render, 10 * 60 * 1000);
+</script>

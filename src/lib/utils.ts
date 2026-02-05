@@ -2,6 +2,14 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { config } from "~/config/config";
 
+export enum Status {
+	READING = "Reading",
+	COMPLETED = "Completed",
+	ON_HOLD = "On Hold",
+	DROPPED = "Dropped",
+	PLANNED = "Plan to Read",
+}
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
