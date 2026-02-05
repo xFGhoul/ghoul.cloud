@@ -5,8 +5,9 @@ import "~/styles/about.css";
 import { config } from "~/config/config";
 ---
 
-<div class="about-link" role="link" tabindex="0" aria-label="Open profile">
+<div class="about-link">
   <div class="glass-card about-card" data-about-card>
+    <a class="about-card-link" href="/me" aria-label="Open profile"></a>
     <div class="profile-image">
       <img src="/avatars/star.png" alt="" />
     </div>
@@ -78,26 +79,3 @@ import { config } from "~/config/config";
     </div>
   </div>
 </div>
-
-<script>
-  const wrapper = document.querySelector(".about-link");
-
-  function shouldIgnore(e: Event): boolean {
-    const target = e.target;
-    if (!(target instanceof Element)) return false;
-    return Boolean(target.closest("[data-no-card-nav]"));
-  }
-
-  wrapper?.addEventListener("click", (e) => {
-    if (shouldIgnore(e)) return;
-    window.location.href = "/me";
-  });
-
-  wrapper?.addEventListener("keydown", (e) => {
-    if (!(e instanceof KeyboardEvent)) return;
-    if (e.key !== "Enter" && e.key !== " ") return;
-    if (shouldIgnore(e)) return;
-    e.preventDefault();
-    window.location.href = "/me";
-  });
-</script>

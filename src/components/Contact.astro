@@ -5,7 +5,12 @@ import "~/styles/contact.css";
 ---
 
 <div class="glass-card contact-card">
-  <h3 class="card-title">Contact</h3>
+  <div class="card-heading">
+    <span class="card-icon" aria-hidden="true">
+      <img src="/svgs/message.svg" alt="" width="16" height="16" />
+    </span>
+    <h3 class="card-title">Contact</h3>
+  </div>
   <a href={`mailto:${config.contact.email}`} class="contact-link">
     <span class="contact-icon">
       <img src="/icons/mail.svg" alt="Mail Icon" width="20" height="20" />

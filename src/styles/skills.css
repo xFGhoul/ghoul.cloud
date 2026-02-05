@@ -3,11 +3,32 @@
 	height: fit-content;
 }
 
+.card-heading {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.card-icon {
+	display: inline-grid;
+	place-items: center;
+	width: 16px;
+	height: 16px;
+	opacity: 0.9;
+}
+
+.card-icon img {
+	width: 16px;
+	height: 16px;
+	display: block;
+}
+
 .card-title {
 	color: white;
 	font-size: 18px;
 	font-weight: 600;
-	margin-bottom: 16px;
+	margin-bottom: 0;
 }
 
 .skills-grid {
