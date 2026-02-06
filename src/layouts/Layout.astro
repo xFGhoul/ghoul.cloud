@@ -1,6 +1,7 @@
 ---
 import { getAnalytics } from "~/components/analytics/analyitcs";
 import Rybbit from "~/components/analytics/Rybbit.astro";
+import Audio from "~/components/Audio.astro";
 import { Toaster } from "~/components/ui/toast";
 import { config } from "~/config/config";
 
@@ -25,6 +26,7 @@ const hasAnalytics = isProd ? await getAnalytics() : false;
   </head>
   <body>
     <slot />
+    <Audio />
     <Toaster client:load />
   </body>
 </html>
