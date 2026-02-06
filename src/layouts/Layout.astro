@@ -2,6 +2,8 @@
 import { getAnalytics } from "~/components/analytics/analyitcs";
 import Rybbit from "~/components/analytics/Rybbit.astro";
 import Audio from "~/components/Audio.astro";
+import Background from "~/components/Background.astro";
+import Theme from "~/components/Theme.astro";
 import { Toaster } from "~/components/ui/toast";
 import { config } from "~/config/config";
 
@@ -13,7 +15,7 @@ const hasAnalytics = isProd ? await getAnalytics() : false;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en"> 
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -26,6 +28,8 @@ const hasAnalytics = isProd ? await getAnalytics() : false;
   </head>
   <body>
     <slot />
+    <Background />
+    <Theme />
     <Audio />
     <Toaster client:load />
   </body>
