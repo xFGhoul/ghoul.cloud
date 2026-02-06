@@ -92,7 +92,7 @@ export const tools: Tool[] = [
 	},
 	{
 		name: "Windows",
-		icon: "/icons/windows.svg",
+		icon: "/icons/windows.webp",
 		link: "https://www.microsoft.com/en-us/windows/windows-11?form=MA149L",
 		subtitle: "My Main Operating System For Years Now.",
 	},

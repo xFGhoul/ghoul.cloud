@@ -4,19 +4,40 @@
 	position: relative;
 }
 
-.about-card-link {
+.about-more {
 	position: absolute;
-	inset: 0;
-	z-index: 1;
-	display: block;
-	border-radius: inherit;
+	top: 12px;
+	right: 12px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 8px;
+	border-radius: 10px;
 	text-decoration: none;
-	color: inherit;
+	color: rgb(255, 255, 255);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.2px;
+	transition:
+		background 0.2s ease,
+		transform 0.2s ease;
+	user-select: none;
 }
 
-.about-card-link:focus-visible {
-	outline: 2px solid rgba(255, 255, 255, 0.35);
+.about-more:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.about-more:focus-visible {
+	outline: 1px solid rgba(255, 255, 255, 0.15);
 	outline-offset: 2px;
+}
+
+.about-more-icon {
+	width: 14px;
+	height: 14px;
+	display: block;
+	opacity: 0.95;
 }
 
 .profile-image {
