@@ -4,10 +4,11 @@ import { config } from "~/config/config";
 
 export enum Status {
 	READING = "Reading",
+	WATCHING = "Watching",
 	COMPLETED = "Completed",
 	ON_HOLD = "On Hold",
 	DROPPED = "Dropped",
-	PLANNED = "Plan to Read",
+	PLANNED = "Planned",
 }
 
 export function cn(...inputs: ClassValue[]) {
