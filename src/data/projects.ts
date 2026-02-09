@@ -78,4 +78,10 @@ export const projects: Project[] = [
 		repoUrl: "https://github.com/xFGhoul/PythonProtector",
 		tools: ["Python", "Windows", "C++", "Github", "Git"],
 	},
+	{
+		name: "Sakura",
+		description: "Most Played Beatmaps Downloader for osu!",
+		repoUrl: "https://github.com/xFGhoul/Sakura",
+		tools: ["Rust", "Windows", "Github", "Git"],
+	},
 ];

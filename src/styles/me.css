@@ -133,10 +133,21 @@
 	gap: 12px;
 
 	overflow-x: auto;
+	overflow-y: hidden;
 	padding-bottom: 6px;
+
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 
 	scroll-snap-type: x mandatory;
 	-webkit-overflow-scrolling: touch;
+
+	cursor: grab;
+}
+
+.me-row-scroller::-webkit-scrollbar {
+	height: 0;
+	display: none;
 }
 
 .me-item {
@@ -170,6 +181,10 @@
 .me-item:focus-visible {
 	box-shadow: 0 0 0 3px rgba(118, 180, 241, 0.35);
 	border-color: rgba(118, 180, 241, 0.5);
+}
+
+.me-row-scroller.is-dragging .me-item {
+	pointer-events: none;
 }
 
 .me-cover {

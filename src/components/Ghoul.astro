@@ -52,6 +52,7 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={m.title}
                                 data-title={m.title}
+                                data-author={(m as any).author ?? ""}
                                 data-description={(m as any).description ?? ""}
                                 data-cover={m.cover}
                                 data-link={(m as any).link ?? ""}
@@ -61,6 +62,7 @@ import { tvShows } from "~/data/shows";
                                     class="me-cover"
                                     src={m.cover}
                                     alt={`${m.title} cover`}
+                                    draggable="false"
                                 />
                                 <span class="me-item-title" aria-hidden="true">
                                     {m.title}
@@ -96,6 +98,7 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={t.title}
                                 data-title={t.title}
+                                data-author={(t as any).author ?? ""}
                                 data-description={(t as any).description ?? ""}
                                 data-cover={t.cover}
                                 data-link={(t as any).link ?? ""}
@@ -105,6 +108,7 @@ import { tvShows } from "~/data/shows";
                                     class="me-cover"
                                     src={t.cover}
                                     alt={`${t.title} cover`}
+                                    draggable="false"
                                 />
                                 <span class="me-item-title" aria-hidden="true">
                                     {t.title}
@@ -140,6 +144,7 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={b.title}
                                 data-title={b.title}
+                                data-author={(b as any).author ?? ""}
                                 data-description={(b as any).description ?? ""}
                                 data-cover={b.cover}
                                 data-link={(b as any).link ?? ""}
@@ -149,6 +154,7 @@ import { tvShows } from "~/data/shows";
                                     class="me-cover"
                                     src={b.cover}
                                     alt={`${b.title} cover`}
+                                    draggable="false"
                                 />
                                 <span class="me-item-title" aria-hidden="true">
                                     {b.title}
@@ -184,6 +190,7 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={a.title}
                                 data-title={a.title}
+                                data-author={(a as any).author ?? ""}
                                 data-description={(a as any).description ?? ""}
                                 data-cover={a.cover}
                                 data-link={(a as any).link ?? ""}
@@ -193,6 +200,7 @@ import { tvShows } from "~/data/shows";
                                     class="me-cover"
                                     src={a.cover}
                                     alt={`${a.title} cover`}
+                                    draggable="false"
                                 />
                                 <span class="me-item-title" aria-hidden="true">
                                     {a.title}
@@ -228,6 +236,7 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={m.title}
                                 data-title={m.title}
+                                data-author={(m as any).author ?? ""}
                                 data-description={(m as any).description ?? ""}
                                 data-cover={m.cover}
                                 data-link={(m as any).link ?? ""}
@@ -237,6 +246,7 @@ import { tvShows } from "~/data/shows";
                                     class="me-cover"
                                     src={m.cover}
                                     alt={`${m.title} cover`}
+                                    draggable="false"
                                 />
                                 <span class="me-item-title" aria-hidden="true">
                                     {m.title}
@@ -272,6 +282,7 @@ import { tvShows } from "~/data/shows";
                                 aria-controls="me-modal"
                                 aria-label={g.title}
                                 data-title={g.title}
+                                data-author={(g as any).author ?? ""}
                                 data-description={(g as any).description ?? ""}
                                 data-cover={g.cover}
                                 data-link={(g as any).link ?? ""}
@@ -281,6 +292,7 @@ import { tvShows } from "~/data/shows";
                                     class="me-cover"
                                     src={g.cover}
                                     alt={`${g.title} cover`}
+                                    draggable="false"
                                 />
                                 <span class="me-item-title" aria-hidden="true">
                                     {g.title}
@@ -311,6 +323,10 @@ import { tvShows } from "~/data/shows";
                             <span
                                 id="me-modal-status"
                                 class="me-pill me-pill-status"
+                                style="display:none;"></span>
+                            <span
+                                id="me-modal-author"
+                                class="me-pill me-pill-author"
                                 style="display:none;"></span>
                         </div>
 
@@ -379,6 +395,10 @@ import { tvShows } from "~/data/shows";
         "me-modal-status",
     ) as HTMLSpanElement | null;
 
+    const authorEl = document.getElementById(
+        "me-modal-author",
+    ) as HTMLSpanElement | null;
+
     const openLinkEl = document.getElementById(
         "me-modal-open",
     ) as HTMLAnchorElement | null;
@@ -425,12 +445,27 @@ import { tvShows } from "~/data/shows";
         statusEl.setAttribute("data-status", normalized);
     }
 
+    function setAuthorPill(author: string) {
+        if (!authorEl) return;
+
+        const a = (author || "").trim();
+        if (!a) {
+            authorEl.style.display = "none";
+            authorEl.textContent = "";
+            return;
+        }
+
+        authorEl.style.display = "";
+        authorEl.textContent = a;
+    }
+
     function openModal(
         title: string,
         description: string,
         cover: string,
         status: string,
         link: string,
+        author: string,
     ) {
         if (!backdrop || !titleEl || !descEl || !coverEl) return;
 
@@ -443,6 +478,7 @@ import { tvShows } from "~/data/shows";
         coverEl.alt = title ? `${title} cover` : "Cover";
 
         setStatusPill(status);
+        setAuthorPill(author);
         setLink(link);
 
         backdrop.classList.add("open");
@@ -459,8 +495,95 @@ import { tvShows } from "~/data/shows";
         if (lastFocused instanceof HTMLElement) lastFocused.focus();
     }
 
+    function enableDragScroll(scroller: HTMLElement) {
+        let isDown = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        let dragStarted = false;
+        let activePointerId: number | null = null;
+        let justDragged = false;
+
+        const DRAG_THRESHOLD_PX = 8;
+
+        scroller.addEventListener("dragstart", (e) => e.preventDefault(), {
+            capture: true,
+        });
+
+        scroller.addEventListener(
+            "pointerdown",
+            (e) => {
+                if (e.pointerType === "mouse" && e.button !== 0) return;
+
+                isDown = true;
+                dragStarted = false;
+                activePointerId = e.pointerId;
+
+                startX = e.clientX;
+                startScrollLeft = scroller.scrollLeft;
+            },
+            { capture: true },
+        );
+
+        scroller.addEventListener(
+            "pointermove",
+            (e) => {
+                if (!isDown) return;
+                if (activePointerId !== e.pointerId) return;
+
+                const dx = e.clientX - startX;
+
+                if (!dragStarted && Math.abs(dx) >= DRAG_THRESHOLD_PX) {
+                    dragStarted = true;
+
+                    scroller.setPointerCapture?.(e.pointerId);
+                    scroller.classList.add("is-dragging");
+
+                    e.preventDefault();
+                }
+
+                if (!dragStarted) return;
+
+                e.preventDefault();
+                scroller.scrollLeft = startScrollLeft - dx;
+            },
+            { capture: true },
+        );
+
+        const stop = (e: PointerEvent) => {
+            if (!isDown) return;
+            if (activePointerId !== e.pointerId) return;
+
+            isDown = false;
+            activePointerId = null;
+
+            if (dragStarted) {
+                justDragged = true;
+                setTimeout(() => (justDragged = false), 0);
+            }
+
+            dragStarted = false;
+            scroller.classList.remove("is-dragging");
+        };
+
+        scroller.addEventListener("pointerup", stop, { capture: true });
+        scroller.addEventListener("pointercancel", stop, { capture: true });
+
+        scroller.addEventListener(
+            "click",
+            (e) => {
+                if (!justDragged) return;
+                e.preventDefault();
+                e.stopPropagation();
+            },
+            true,
+        );
+    }
+
+    document.querySelectorAll<HTMLElement>(".me-row-scroller").forEach(enableDragScroll);
+
     document
-        .querySelectorAll(".me-item[data-title][data-cover]")
+        .querySelectorAll<HTMLElement>(".me-item[data-title][data-cover]")
         .forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 const el = btn as HTMLElement;
@@ -470,8 +593,10 @@ import { tvShows } from "~/data/shows";
                 const cover = el.dataset.cover || "";
                 const status = el.dataset.status || "";
                 const link = el.dataset.link || "";
+                const author = el.dataset.author || "";
 
-                if (cover) openModal(title, description, cover, status, link);
+                if (cover)
+                    openModal(title, description, cover, status, link, author);
             });
         });
 
