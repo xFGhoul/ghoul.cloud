@@ -4,10 +4,10 @@
 	position: relative;
 }
 
-.about-more {
+.about-more,
+.about-faith {
 	position: absolute;
 	top: 12px;
-	right: 12px;
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
@@ -24,15 +24,25 @@
 	user-select: none;
 }
 
-.about-more:hover {
+.about-more {
+	right: 12px;
+}
+.about-faith {
+	left: 12px;
+}
+
+.about-more:hover,
+.about-faith:hover {
 	background: rgba(255, 255, 255, 0.1);
 }
 
-.about-more:focus-visible {
+.about-more:focus-visible,
+.about-faith:focus-visible {
 	outline: 1px solid rgba(255, 255, 255, 0.15);
 	outline-offset: 2px;
 }
 
+.about-faith-icon,
 .about-more-icon {
 	width: 14px;
 	height: 14px;
