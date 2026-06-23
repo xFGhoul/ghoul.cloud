@@ -2,7 +2,7 @@
 
 import solidJs from "@astrojs/solid-js";
 
-import { defineConfig } from "astro/config";
+import { defineConfig, memoryCache } from "astro/config";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -27,6 +27,9 @@ export default defineConfig({
         },
 
         plugins: [tailwindcss()],
+    },
+    cache: {
+    provider: memoryCache(),
     },
     integrations: [
         solidJs(),

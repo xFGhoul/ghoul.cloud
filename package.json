@@ -10,11 +10,11 @@
 		"copy": "rsync -avz --progress --delete /home/ghoul/github/ghoul.cloud/dist/ /home/ghoul/home/"
 	},
 	"dependencies": {
-		"@astrojs/solid-js": "6.0.1",
+		"@astrojs/solid-js": "7.0.0",
 		"@astrojs/tailwind": "6.0.2",
 		"@kobalte/core": "^0.13.11",
 		"@tailwindcss/vite": "^4.3.1",
-		"astro": "6.4.8",
+		"astro": "7.0.0",
 		"baseline-browser-mapping": "^2.10.38",
 		"caniuse-lite": "^1.0.30001799",
 		"class-variance-authority": "^0.7.1",
